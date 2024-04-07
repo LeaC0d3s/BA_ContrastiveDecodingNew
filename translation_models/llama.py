@@ -126,8 +126,8 @@ class LLaMaTranslationModel(TranslationModel):
                 temperature=1.0,
                 top_p=1.0,
                 # manually added
-                return_dict_in_generate=True,
-                output_scores=True,
+                #return_dict_in_generate=True,
+                #output_scores=True,
             )
             output = self.pipeline.postprocess(output)
             output = output[0]['generated_text']
@@ -187,11 +187,11 @@ class LLaMaTranslationModel(TranslationModel):
             prompt_templates.append(prompt_template)
         logging.info(prompts)
         inputs = [self.pipeline.preprocess(prompt) for prompt in prompts]
-        logging.info(inputs)
+        #logging.info(inputs)
 
         input_ids = [x['input_ids'][0].tolist() for x in inputs]
         attention_mask = [x['attention_mask'][0].tolist() for x in inputs]
-        logging.info("Input_ids before padding", input_ids)
+        #logging.info("Input_ids before padding", input_ids)
 
         pad_token_id = self.tokenizer.get_vocab()["▁"]
         max_len = max(len(x) for x in input_ids)
@@ -209,7 +209,7 @@ class LLaMaTranslationModel(TranslationModel):
                                      [0] * (max_len - len(attention_mask[i])) +
                                      attention_mask[i][second_inst_idx + 1:])
 
-        logging.info("Input_ids after padding", input_ids)
+        #logging.info("Input_ids after padding", input_ids)
         input_ids = torch.tensor(input_ids).to(self.model.device)
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
         logits_processor = LogitsProcessorList([
@@ -235,13 +235,16 @@ class LLaMaTranslationModel(TranslationModel):
         )
 
         output = output.reshape(1, output.shape[0], *output.shape[1:])
+        logging.info(output)
         output = {
             "generated_sequence": output,
             "input_ids": input_ids[0],
             "prompt_text": prompts[0],
         }
+        logging.info(output)
         output = self.pipeline._ensure_tensor_on_device(output, device=torch.device("cpu"))
         output = self.pipeline.postprocess(output)
+        logging.info(output)
         output = output[0]['generated_text']
         _, output = output.rsplit("[/INST]", maxsplit=1)
         logging.info(output)
