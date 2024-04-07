@@ -216,7 +216,7 @@ class LLaMaTranslationModel(TranslationModel):
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
         ])
 
-        output = self.model.generate(
+        outputs = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
             num_beams=num_beams,
@@ -234,21 +234,23 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
 
-        logging.info(output)
+        #logging.info(outputs)
 
-        output = output.reshape(1, output.shape[0], *output.shape[1:])
+        output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         logging.info(output)
         #--added start
 
+        transition_scores = self.model.compute_transition_scores(
+            outputs.sequences[0], outputs.scores[0], normalize_logits=True
+        )
+        logging.info(transition_scores)
+
         first_input_id = input_ids[0]
         input_length = first_input_id.shape[0]
-        generated_tokens = output[:, input_length:]
-        transition_scores = self.model.compute_transition_scores(
-            generated_tokens, output.scores, normalize_logits=True
-        )
-        # Print token information
+        generated_tokens = outputs.sequences[0][:, input_length:]
         for tok, score in zip(generated_tokens[0], transition_scores[0]):
-            logging.info(f"| {tok:5d} | {tokenizer.decode(tok):8s} | {score.numpy():.4f} | {np.exp(score.numpy()):.2%}")
+            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.numpy():.4f} | {np.exp(score.numpy()):.2%}")
+
         #--added end
         output = {
             "generated_sequence": output,
