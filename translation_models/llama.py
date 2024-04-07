@@ -237,12 +237,12 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info(outputs)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
-        logging.info(output)
+        #logging.info(output)
         #--added start
 
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
-        logging.info(transition_scores)
+        #logging.info(transition_scores)
 
         first_input_id = input_ids[0]
         input_length = first_input_id.shape[0]
@@ -256,7 +256,7 @@ class LLaMaTranslationModel(TranslationModel):
             "input_ids": input_ids[0],
             "prompt_text": prompts[0],
         }
-        logging.info(output)
+        #logging.info(output)
         output = self.pipeline._ensure_tensor_on_device(output, device=torch.device("cpu"))
         output = self.pipeline.postprocess(output)
         #logging.info(output)
@@ -274,31 +274,6 @@ class LLaMaTranslationModel(TranslationModel):
 
         return translation
 
-    def get_probs(self, output):
-        #from transformers import GPT2Tokenizer, AutoModelForCausalLM
-        #import numpy as np
-
-        #tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-        #model = AutoModelForCausalLM.from_pretrained("gpt2")
-        #tokenizer.pad_token_id = tokenizer.eos_token_id
-        #inputs = tokenizer(["Today is"], return_tensors="pt")
-
-        #outputs = model.generate(**inputs, max_new_tokens=5, return_dict_in_generate=True, output_scores=True)
-        transition_scores = model.compute_transition_scores(
-            outputs.sequences, outputs.scores, normalize_logits=True
-        )
-
-        input_length = inputs.input_ids.shape[1]
-        generated_tokens = outputs.sequences[:, input_length:]
-        for tok, score in zip(generated_tokens[0], transition_scores[0]):
-            # | token | token string | logits | probability
-            print(f"| {tok:5d} | {tokenizer.decode(tok):8s} | {score.numpy():.4f} | {np.exp(score.numpy()):.2%}")
-        # Expected output:
-        # |   262 |  the     | -1.4136 | 24.33%
-        # |  1110 |  day     | -2.6089 | 7.36%
-        # |   618 |  when    | -2.0096 | 13.40%
-        # |   356 |  we      | -1.8593 | 15.58%
-        # |   460 |  can     | -2.5083 | 8.14%
 
 class PromptTemplate:
     """
