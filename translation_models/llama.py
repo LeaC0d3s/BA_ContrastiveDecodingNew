@@ -236,7 +236,18 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = output.reshape(1, output.shape[0], *output.shape[1:])
         logging.info(output)
+        #--added start
 
+        first_input_id = input_ids[0]
+        input_length = first_input_id.shape[0]
+        generated_tokens = output[:, input_length:]
+        transition_scores = self.model.compute_transition_scores(
+            generated_tokens, output.scores, normalize_logits=True
+        )
+        # Print token information
+        for tok, score in zip(generated_tokens[0], transition_scores[0]):
+            logging.info(f"| {tok:5d} | {tokenizer.decode(tok):8s} | {score.numpy():.4f} | {np.exp(score.numpy()):.2%}")
+        #--added end
         output = {
             "generated_sequence": output,
             "input_ids": input_ids[0],
