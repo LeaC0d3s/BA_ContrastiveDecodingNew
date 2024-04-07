@@ -43,7 +43,15 @@ class MTTask:
         file_path = "en_selected_sents.txt"
 
         # Load the dataset from the text file
-        source_sentences = load_dataset("text", data_files=file_path, cache_dir=None)["train"]["text"]
+        #source_sentences = load_dataset("text", data_files=file_path)["train"]["text"]
+
+        # Open the file and read its contents
+        with open(file_path, "r", encoding="utf-8") as file:
+            # Read all lines from the file
+            source_sentences = file.readlines()
+
+        # Optionally, you can remove newline characters from each line
+        source_sentences = [sentence.strip() for sentence in source_sentences]
 
 
 
@@ -113,8 +121,14 @@ class MTTask:
 
         if not os.path.isfile(str(self.out_dir)+"/"+"ref.text"):
             file_path = "de_selected_ref.txt"
-            target_sentences = load_dataset("text", data_files=file_path,cache_dir=None)["train"]["text"]
+            #target_sentences = load_dataset("text", data_files=file_path,cache_dir=None)["train"]["text"]
             #target_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.tgt_lang])['devtest']['sentence']
+            with open(file_path, "r", encoding="utf-8") as file:
+                # Read all lines from the file
+                target_sentences = file.readlines()
+
+            # Optionally, you can remove newline characters from each line
+            target_sentences = [sentence.strip() for sentence in target_sentences]
 
             with open(str(self.out_dir) + "/" + "ref.txt", 'w') as f:
                 f.write("\n".join(target_sentences))
