@@ -229,7 +229,7 @@ class LLaMaTranslationModel(TranslationModel):
             temperature=1.0,
             top_p=1.0,
             #manually added
-            #return_dict_in_generate=True,
+            return_dict_in_generate=True,
             output_scores=True,
             **kwargs,
         )
