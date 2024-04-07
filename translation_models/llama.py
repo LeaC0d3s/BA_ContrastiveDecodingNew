@@ -248,7 +248,7 @@ class LLaMaTranslationModel(TranslationModel):
         input_length = first_input_id.shape[0]
         generated_tokens = outputs.sequences[0][input_length:]
         for tok, score in zip(generated_tokens, transition_scores[0]):
-            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.numpy():.4f} | {np.exp(score.numpy()):.2%}")
+            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
         #--added end
         output = {
