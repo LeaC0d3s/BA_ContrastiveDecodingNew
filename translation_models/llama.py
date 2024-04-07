@@ -241,7 +241,7 @@ class LLaMaTranslationModel(TranslationModel):
         #--added start
 
         transition_scores = self.model.compute_transition_scores(
-            outputs.sequences[0], outputs.scores[:, ::2], normalize_logits=True)
+            outputs.sequences, outputs.scores, normalize_logits=True)
         logging.info(transition_scores)
 
         first_input_id = input_ids[0]
