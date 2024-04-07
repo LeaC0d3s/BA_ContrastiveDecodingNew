@@ -234,6 +234,8 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
 
+        logging.info(output)
+
         output = output.reshape(1, output.shape[0], *output.shape[1:])
         logging.info(output)
         #--added start
