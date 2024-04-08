@@ -282,14 +282,14 @@ class LLaMaTranslationModel(TranslationModel):
         # s
         save_origin_probs_de = []
         save_origin_probs_en = []
-        save_origin_translation = [decoded_de, decoded_en]
+        save_origin_translation = [str(decoded_de), str(decoded_en)]
         save_probs = []
 
         logging.info(self.tokenizer.decode(generated_tokens))
 
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            logging.info("hi",type(tok), type(self.tokenizer.decode(tok)), type(float(np.round(score.cpu().numpy(), decimals=4))), type(f"{np.exp(score.cpu().numpy()):2%}"))
+            logging.info("hi",type(int(tok)), type(self.tokenizer.decode(tok)), type(float(np.round(score.cpu().numpy(), decimals=4))), type(f"{np.exp(score.cpu().numpy()):2%}"))
 
             save_probs.append((tok, self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
