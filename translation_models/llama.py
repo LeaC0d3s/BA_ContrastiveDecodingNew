@@ -219,8 +219,7 @@ class LLaMaTranslationModel(TranslationModel):
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
         ])
-        logging.info("input_ids shape:", input_ids)
-        logging.info("input_ids[0] shape:", input_ids_1)
+
 
         outputs = self.model.generate(
             input_ids=input_ids,
