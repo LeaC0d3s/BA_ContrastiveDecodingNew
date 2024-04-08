@@ -211,12 +211,18 @@ class LLaMaTranslationModel(TranslationModel):
 
         #logging.info("Input_ids after padding", input_ids)
         input_ids = torch.tensor(input_ids).to(self.model.device)
+        input_ids_1 = torch.tensor(input_ids[0]).to(self.model.device)
+        input_ids_2 = torch.tensor(input_ids[1]).to(self.model.device)
+
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
+        attention_mask_1 = torch.tensor(attention_mask[0]).to(self.model.device)
+        attention_mask_2 = torch.tensor(attention_mask[1]).to(self.model.device)
+
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
         ])
-        logging.info("input_ids shape:", input_ids.shape[-1], input_ids)
-        logging.info("input_ids[0] shape:", input_ids[0].shape, input_ids[0])
+        logging.info("input_ids shape:", input_ids)
+        logging.info("input_ids[0] shape:", input_ids_1)
 
         outputs = self.model.generate(
             input_ids=input_ids,
@@ -236,12 +242,12 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
         outputs_1 = self.model.generate(
-            input_ids=input_ids[0],
-            attention_mask=attention_mask,
+            input_ids=input_ids_1,
+            attention_mask=attention_mask_1,
             num_beams=num_beams,
             eos_token_id=self.tokenizer.eos_token_id,
             max_length=1200,
-            logits_processor=logits_processor,
+            #logits_processor=logits_processor,
             remove_invalid_values=True,
             # Disable sampling
             do_sample=False,
@@ -253,12 +259,12 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
         outputs_2 = self.model.generate(
-            input_ids=input_ids[1],
-            attention_mask=attention_mask[1],
+            input_ids=input_ids_2,
+            attention_mask=attention_mask_2,
             num_beams=num_beams,
             eos_token_id=self.tokenizer.eos_token_id,
             max_length=1200,
-            logits_processor=logits_processor,
+            #logits_processor=logits_processor,
             remove_invalid_values=True,
             # Disable sampling
             do_sample=False,
