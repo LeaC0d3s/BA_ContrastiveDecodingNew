@@ -287,6 +287,7 @@ class LLaMaTranslationModel(TranslationModel):
             save_probs_new = []
             # Assuming generated_tokens is a list of token IDs
             decoded_string = self.tokenizer.decode(generated_tokens)
+            logging.info(decoded_string)
             for tok, score in zip(generated_tokens, transition_scores[idx]):
                 logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
                 save_probs_new.append((tok, self.tokenizer.decode(tok), score.cpu().numpy(), np.exp(score.cpu().numpy())))
