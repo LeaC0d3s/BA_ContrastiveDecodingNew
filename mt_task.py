@@ -101,7 +101,7 @@ class MTTask:
             origin_translation_probs_de = {}
             origin_translation_probs_en = {}
             for idx, pair in enumerate(tqdm(list(zip(*multi_source_sentences)))):
-                translation, save_probs, save_origin_translation, save_origin_probs = translation_method(
+                translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en = translation_method(
                     src_langs=src_langs,
                     tgt_langs=tgt_langs,
                     src_weights=src_weights,
@@ -109,8 +109,8 @@ class MTTask:
                     )
                 translations.append(translation)
                 translations_probs[idx] = (translation, save_probs)
-                origin_translation_probs_de[idx] = (save_origin_translation[0], save_origin_probs[0])
-                origin_translation_probs_en[idx] = (save_origin_translation[1], save_origin_probs[1])
+                origin_translation_probs_de[idx] = (save_origin_translation[0], save_origin_probs_de)
+                origin_translation_probs_en[idx] = (save_origin_translation[1], save_origin_probs_en)
         else:
             raise NotImplementedError
 
