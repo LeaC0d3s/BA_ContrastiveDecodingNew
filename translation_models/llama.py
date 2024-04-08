@@ -289,7 +289,7 @@ class LLaMaTranslationModel(TranslationModel):
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             logging.info(score.cpu().numpy(), np.exp(score.cpu().numpy()))
-            logging.info(float(np.round(score.cpu().numpy(), decimals=4), float(np.exp(score.cpu().numpy())*100)))
+            logging.info(float(np.round(score.cpu().numpy(), decimals=4)), float(np.exp(score.cpu().numpy()))*100)
             save_probs.append((tok, self.tokenizer.decode(tok), score.cpu().numpy(), np.exp(score.cpu().numpy())))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
