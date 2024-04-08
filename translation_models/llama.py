@@ -211,12 +211,10 @@ class LLaMaTranslationModel(TranslationModel):
 
         #logging.info("Input_ids after padding", input_ids)
         input_ids = torch.tensor(input_ids).to(self.model.device)
-        input_ids_1 = torch.tensor([input_ids[0]]).to(self.model.device)
-        input_ids_2 = torch.tensor([input_ids[1]]).to(self.model.device)
+
 
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
-        attention_mask_1 = torch.tensor([attention_mask[0]]).to(self.model.device)
-        attention_mask_2 = torch.tensor([attention_mask[1]]).to(self.model.device)
+
 
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
@@ -242,8 +240,8 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
         outputs_1 = self.model.generate(
-            input_ids=input_ids_1,
-            attention_mask=attention_mask_1,
+            input_ids=input_ids,
+            attention_mask=attention_mask,
             num_beams=num_beams,
             eos_token_id=self.tokenizer.eos_token_id,
             max_length=1200,
@@ -259,8 +257,8 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
         outputs_2 = self.model.generate(
-            input_ids=input_ids_2,
-            attention_mask=attention_mask_2,
+            input_ids=input_ids,
+            attention_mask=attention_mask,
             num_beams=num_beams,
             eos_token_id=self.tokenizer.eos_token_id,
             max_length=1200,
@@ -286,11 +284,11 @@ class LLaMaTranslationModel(TranslationModel):
                 output.sequences, output.scores, normalize_logits=True)
             idx_input_id = input_ids[idx]
             input_length = idx_input_id.shape[0]
-            generated_tokens = output.sequences[0][input_length:]
+            generated_tokens = output.sequences[idx][input_length:]
             save_probs_new = []
             # Assuming generated_tokens is a list of token IDs
             decoded_string = self.tokenizer.decode(generated_tokens)
-            for tok, score in zip(generated_tokens, transition_scores[0]):
+            for tok, score in zip(generated_tokens, transition_scores[idx]):
                 logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
                 save_probs_new.append((tok, self.tokenizer.decode(tok), score.cpu().numpy(), np.exp(score.cpu().numpy())))
             save_origin_probs.append(save_probs_new)
