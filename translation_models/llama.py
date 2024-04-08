@@ -289,21 +289,20 @@ class LLaMaTranslationModel(TranslationModel):
 
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            logging.info("hi",type(int(tok)), type(self.tokenizer.decode(tok)), type(float(np.round(score.cpu().numpy(), decimals=4))), type(f"{np.exp(score.cpu().numpy()):2%}"))
 
-            save_probs.append((tok, self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
+            save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
 
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_de.append((tok, self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
+            save_origin_probs_de.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_en))
 
         for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_en.append((tok, self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
+            save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
 
         #--added end
