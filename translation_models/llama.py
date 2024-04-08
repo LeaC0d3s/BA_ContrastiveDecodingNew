@@ -211,12 +211,12 @@ class LLaMaTranslationModel(TranslationModel):
 
         #logging.info("Input_ids after padding", input_ids)
         input_ids = torch.tensor(input_ids).to(self.model.device)
-        input_ids_1 = torch.tensor(input_ids[0]).to(self.model.device)
-        input_ids_2 = torch.tensor(input_ids[1]).to(self.model.device)
+        input_ids_1 = torch.tensor([input_ids[0]]).to(self.model.device)
+        input_ids_2 = torch.tensor([input_ids[1]]).to(self.model.device)
 
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
-        attention_mask_1 = torch.tensor(attention_mask[0]).to(self.model.device)
-        attention_mask_2 = torch.tensor(attention_mask[1]).to(self.model.device)
+        attention_mask_1 = torch.tensor([attention_mask[0]]).to(self.model.device)
+        attention_mask_2 = torch.tensor([attention_mask[1]]).to(self.model.device)
 
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
