@@ -252,8 +252,8 @@ class LLaMaTranslationModel(TranslationModel):
         )
 
 
-        logging.info(outputs)
-        logging.info(outputs_orig)
+        #logging.info(outputs)
+        #logging.info(outputs_orig)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
 
