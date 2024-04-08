@@ -233,8 +233,60 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
+        outputs_1 = self.model.generate(
+            input_ids=input_ids[0],
+            attention_mask=attention_mask,
+            num_beams=num_beams,
+            eos_token_id=self.tokenizer.eos_token_id,
+            max_length=1200,
+            logits_processor=logits_processor,
+            remove_invalid_values=True,
+            # Disable sampling
+            do_sample=False,
+            temperature=1.0,
+            top_p=1.0,
+            # manually added
+            return_dict_in_generate=True,
+            output_scores=True,
+            **kwargs,
+        )
+        outputs_2 = self.model.generate(
+            input_ids=input_ids[1],
+            attention_mask=attention_mask[1],
+            num_beams=num_beams,
+            eos_token_id=self.tokenizer.eos_token_id,
+            max_length=1200,
+            logits_processor=logits_processor,
+            remove_invalid_values=True,
+            # Disable sampling
+            do_sample=False,
+            temperature=1.0,
+            top_p=1.0,
+            # manually added
+            return_dict_in_generate=True,
+            output_scores=True,
+            **kwargs,
+        )
 
+        no_processing = [outputs_1, outputs_2]
+        save_origin_probs = []
+        save_origin_translation = []
         #logging.info(outputs)
+        for idx, out in enumerate(no_processing):
+            output = out.sequences.reshape(1, out.sequences.shape[0], *out.sequences.shape[1:])
+            transition_scores = self.model.compute_transition_scores(
+                output.sequences, output.scores, normalize_logits=True)
+            idx_input_id = input_ids[idx]
+            input_length = idx_input_id.shape[0]
+            generated_tokens = output.sequences[0][input_length:]
+            save_probs_new = []
+            # Assuming generated_tokens is a list of token IDs
+            decoded_string = self.tokenizer.decode(generated_tokens)
+            for tok, score in zip(generated_tokens, transition_scores[0]):
+                logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+                save_probs_new.append((tok, self.tokenizer.decode(tok), score.cpu().numpy(), np.exp(score.cpu().numpy())))
+            save_origin_probs.append(save_probs_new)
+            save_origin_translation.append(decoded_string)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         #logging.info(output)
@@ -247,8 +299,13 @@ class LLaMaTranslationModel(TranslationModel):
         first_input_id = input_ids[0]
         input_length = first_input_id.shape[0]
         generated_tokens = outputs.sequences[0][input_length:]
+        # Initialize an empty list to store tuples
+        save_probs = []
+
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+            save_probs.append((tok, self.tokenizer.decode(tok), score.cpu().numpy(), np.exp(score.cpu().numpy())))
+
 
         #--added end
         output = {
@@ -272,7 +329,7 @@ class LLaMaTranslationModel(TranslationModel):
         else:
             translation = response_lines[0].strip()
 
-        return translation
+        return translation, save_probs, save_origin_translation, save_origin_probs
 
 
 class PromptTemplate:

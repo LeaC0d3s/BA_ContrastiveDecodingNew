@@ -9,6 +9,7 @@ from sacrebleu import get_source_file
 from datasets import load_dataset
 from tqdm import tqdm
 import os
+import json
 
 class MTTask:
 
@@ -96,14 +97,20 @@ class MTTask:
                     src_langs.append(self.src_lang)
 
             translations = []
-            for pair in tqdm(list(zip(*multi_source_sentences))):
-                translation = translation_method(
+            translations_probs = {}
+            origin_translation_probs_de = {}
+            origin_translation_probs_en = {}
+            for idx, pair in enumerate(tqdm(list(zip(*multi_source_sentences)))):
+                translation, save_probs, save_origin_translation, save_origin_probs = translation_method(
                     src_langs=src_langs,
                     tgt_langs=tgt_langs,
                     src_weights=src_weights,
                     multi_source_sentences=pair,
                     )
                 translations.append(translation)
+                translations_probs[idx] = (translation, save_probs)
+                origin_translation_probs_de[idx] = (save_origin_translation[0], save_origin_probs[0])
+                origin_translation_probs_en[idx] = (save_origin_translation[1], save_origin_probs[1])
         else:
             raise NotImplementedError
 
@@ -118,6 +125,13 @@ class MTTask:
 
         with open(str(self.out_dir)+"/"+file_name+".txt", 'w') as f:
             f.write("\n".join(translations))
+        with open(str(self.out_dir)+"/"+file_name+"probs_CD.json", 'w') as f:
+            json.dump(translations_probs, f)
+
+        with open(str(self.out_dir)+"/"+file_name+"probs_orig_de.json", 'w') as f:
+            json.dump(origin_translation_probs_de, f)
+        with open(str(self.out_dir)+"/"+file_name+"probs_orig_en.json", 'w') as f:
+            json.dump(origin_translation_probs_en, f)
 
         if not os.path.isfile(str(self.out_dir)+"/"+"ref.text"):
             file_path = "de_selected_ref.txt"
