@@ -125,12 +125,12 @@ class MTTask:
 
         with open(str(self.out_dir)+"/"+file_name+".txt", 'w') as f:
             f.write("\n".join(translations))
-        with open(str(self.out_dir)+"/"+file_name+"probs_CD.json", 'w') as f:
+        with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
             json.dump(translations_probs, f)
 
-        with open(str(self.out_dir)+"/"+file_name+"probs_orig_de.json", 'w') as f:
+        with open(str(self.out_dir)+"/"+file_name+".probs_orig_de.json", 'w') as f:
             json.dump(origin_translation_probs_de, f)
-        with open(str(self.out_dir)+"/"+file_name+"probs_orig_en.json", 'w') as f:
+        with open(str(self.out_dir)+"/"+file_name+".probs_orig_en.json", 'w') as f:
             json.dump(origin_translation_probs_en, f)
 
         if not os.path.isfile(str(self.out_dir)+"/"+"ref.text"):
