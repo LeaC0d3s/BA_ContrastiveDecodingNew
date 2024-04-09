@@ -1,0 +1,264 @@
+1 en_selected_sents.txt
+2 de_selected_ref.txt
+3 out/flores/en-de/contrastive-None--0.1-lang-en--0.9.txt
+4 out/flores/en-de/contrastive-None--0.1-lang-en--0.5.txt
+
+36
+0.6703420896351792 0.6703420896351792
+1 Advisories are merely a brief summary of the political situation in one country.
+2 Beratungen sind lediglich eine kurze Zusammenfassung der politischen Situation in einem Land.
+3 Advisories sind lediglich eine knappe Zusammenfassung der politischen Situation in einem Land.
+4 Advisories sind lediglich eine knappe Zusammenfassung der politischen Situation in einem Land.
+
+13
+0.3981101537239463 0.0977229170898587
+1 If you want to be close to the action you're going to have to get in early to get a camping site close to the music.
+2 Wenn Sie nahe am Geschehen sein wollen, müssen Sie früh hingehen, um einen Campingplatz in der Nähe der Musik zu bekommen.
+3 Wenn du nah am Geschehen sein möchtest, musst du früh ankommst, um eine Lagerplatzreservierung in der Nähe der Musik zu bekommen.
+4 Wenn du nah am Action sein möchtest, musst du früh ankommst, um eine Camping-Platz close to the Music zu bekommen.
+
+8
+0.39115686727539595 0.391080327529236
+1 Its renown for being an epicenter of luxury began in about 400 A.D. and lasted up until about 1100 A.D.
+2 Sein Ruhm als Epizentrum des Luxus begann ungefähr um 400 n. Chr. und dauerte bis ungefähr 1100 n. Chr. an.
+3 Seine Renommee als Epizentrum für Luxus begann im etwa 400 n. Chr. und dauerte bis etwa 1100 n. Chr.
+4 Seine Renommée als Epizentrum von Luxus begann etwa im Jahr 400 n. Chr. und dauerte bis etwa 1100 n. Chr.
+
+29
+0.3571406027926057 0.37903259135181483
+1 The idea of skiing is very old — cave paintings depicting skiers date back as far as 5000 BC!
+2 Die Idee des Skifahrens ist sehr alt – Höhlenmalereien mit Darstellungen von Skifahrern gehen bis 5000 v. Chr. zurück!
+3 Die Idee des Skifahrens ist sehr alt - cave paintings showing skiers date back to around 5000 BC!
+4 Die Idee des Skifahrens ist sehr alt - Höhlenmalereien, die Skifahrer darstellen, gibt es bereits seit 5000 v. Chr.!
+
+1
+0.33460805384999953 0.4452035958895918
+1 The story presented in the French opera, by Camille Saint-Saens, is of an artist "whose life is dictated by a love for drugs and Japan."
+2 Die Geschichte, die in der französischen Oper von Camille Saint-Saens vorgestellte wurde, handelt von einem Künstler, „dessen Leben von der Liebe zu Drogen und Japan bestimmt ist“.
+3 Die Geschichte, die in der französischen Opera von Camille Saint-Saens dargestellt wird, handelt von einem Künstler, whose life is dictated by a love for drugs and Japan.
+4 Die Geschichte, die in der französischen Oper von Camille Saint-Saens dargestellt wird, handelt von einem Künstler, whose life is dictated by a love for drugs and Japan.
+
+26
+0.3182598908987164 0.35733240902823293
+1 When you went abroad at first, people were probably patient and understanding, knowing that travellers in a new country need to adapt.
+2 Als Sie das erste Mal ins Ausland reisten, waren die Menschen wahrscheinlich geduldig und verständnisvoll, weil sie wussten, dass sich Reisende in einem neuen Land anpassen müssen.
+3 Als du zum ersten Mal ins Ausland gereist bist, haben die Leute sich wahrscheinlich patient und verständig gesouwd, bekanntschaftendass Reisende in einem neuen Land anpassen müssen.
+4 Als du zum ersten Mal ins Ausland gereist hast, haben die Leute wahrscheinlich patent und verstehend towards dir gewesen, weil sie wussten, dass Reisende in einem neuen Land anpassen müssen.
+
+16
+0.2888005637508866 0.25983833013159885
+1 The satellite was sent into space by a rocket. Scientists use telescopes in space because the Earth’s atmosphere distorts some of our light and view.
+2 Der Satellit wurde von einer Rakete ins Weltall befördert. Wissenschaftler verwenden Teleskope im Weltall, weil die Erdatmosphäre unser Licht und unseren Blick etwas verzerrt.
+3 Der Satellit wurde von einer Rakete in den Weltraum geschickt. Astronomen verwenden in der Weltraum teleskopen, weil die Erdatmosphäre einige unseres Lichts und Blickwinkels verzerrt.
+4 Der Satellit wurde von einer Rakete in den Weltraum geschickt. Astronomen verwenden Teleskope im All because the Earth’s atmosphere distorts some of our light and view.
+
+30
+0.28339296176052864 0.28339296176052864
+1 Twentieth century research has shown that there are two pools of genetic variation: hidden and expressed.
+2 Forschungen im zwanzigsten Jahrhundert haben gezeigt, dass es zwei Pools genetischer Variationen gibt: versteckt und exprimiert.
+3 Forschungen des 20. Jahrhunderts haben gezeigt, dass es zwei Poolen genetischer Variation gibt: die verborgene und die expressionierte.
+4 Forschungen des 20. Jahrhunderts haben gezeigt, dass es zwei Poolen genetischer Variation gibt: die verborgene und die expressionierte.
+
+15
+0.2736042573004536 0.06281266581391746
+1 Later reports then stated the plane received a bomb threat and was diverted back to Afghanistan, landing in Kandahar.
+2 Spätere Berichte gaben dann an, das Flugzeug habe eine Bombendrohung erhalten und sei nach Afghanistan umgeleitet worden, wo es in Kandahar gelandet sei.
+3 Später berichteten Quellen, dass das Flugzeug eine Bombendrohung erhalten und zurück in Afghanistan umgeplant werden musste, wo es in Kandahar landete.
+4 Spätere Meldungen bezeichneten den Flugzeug als receiving a bomb threat and being diverted back to Afghanistan, where it landed in Kandahar.
+
+23
+0.239802967618271 0.239802967618271
+1 The major religion in Moldova is Orthodox Christian.
+2 Die wichtigste Religion in Moldawien ist die christlich-orthodoxe.
+3 Die Hauptreligion in Moldau ist die orthodoxe Christianität.
+4 Die Hauptreligion in Moldau ist die orthodoxe Christianität.
+
+5
+0.23050956590375019 0.17797408258940464
+1 Looking decidedly rusty in the game against their southern sisters, South Africa however steadily improved as the tournament progressed.
+2 Obwohl die Mannschaft im Spiel gegen ihre südlichen Schwestern definitiv eingerostet wirkte, verbesserte sich Südafrika im Verlauf des Turniers stetig.
+3 Südafrika sah jedoch bei ihrem Spiel gegen ihre südlichen Schwestern zunehmend verbessert aus, als das Turnier fortschritt.
+4 Südafrika sah jedoch zunehmend verbessert aus, als das Turnier fortschritt, obwohl sie gegen ihre südlichen Schwestern entschieden rustig aussahen.
+
+11
+0.20944468113459103 0.22538923642278652
+1 For a comparison of population that surprises many: There are more African Americans living in the US than there are Canadian citizens.
+2 Ein Bevölkerungsvergleich, der viele überrascht: Es leben mehr Afroamerikaner in den USA als Kanada Staatsbürger hat.
+3 Es gibt mehr Afro-Amerikaner in den USA als Einwohner Kanadas.
+4 Es gibt mehr Afro-Amerikaner in den USA als there are Canadian citizens.
+
+12
+0.1912481314888403 0.20144990145560465
+1 Around 3 minutes into the launch, an on-board camera showed numerous pieces of insulation foam break away from the fuel tank.
+2 Etwa 3 Minuten nach dem Start zeigte eine Bordkamera, wie sich zahllose Teile aus Isolierschaum vom Treibstofftank lösten.
+3 In etwa 3 Minuten nach dem Start wurden durch eine auf dem Raumfahrzeug montierte Kamera numerous pieces of Insulation foam von der Treibstofftank separiert verzeichnet.
+4 In etwa 3 Minuten nach dem Start traten numerous pieces of Isolierfoam von der Treibstofftank ab, die von einer auf board-Kamera gefilmt wurden.
+
+7
+0.1832874479953993 0.0612957497932821
+1 At one point a member of the mob waved the head of a royal guard killed at Versailles in front of the terrified Queen.
+2 Irgendwann schwenkte ein Mitglied der aufgebrachten Menge den Kopf einer in Versailles getöteten königlichen Garde vor den Augen der entsetzten Königin.
+3 Einmal wavierte ein Mitglied der Bande das Haupt eines königlichen Leibwächters, das in Versailles getötet wurde, vor der entsetzten Königin.
+4 Einmal waved a member of the mob the head of a royal guard killed at Versailles in front of the terrified Queen.
+
+34
+0.17395797375642236 0.36648010989668794
+1 The patient had been to Nigeria, where some cases of the Ebola virus have occurred.
+2 Der Patient hatte sich in Nigeria aufgehalten, wo einige Fälle des Ebolavirus auftraten.
+3 Der Patient hatte Nigeria besucht, where some cases of the Ebola virus have occurred.
+4 Der Patient hatte Nigeria besucht, wo einige Fälle des Ebola-Virus aufgetreten sind.
+
+32
+0.1667955161379731 0.1667955161379731
+1 The Babylonians built each of their gods a primary temple that was considered the home of the god.
+2 Die Babylonier bauten jedem ihrer Götter einen Haupttempel, der als Haus des Gottes betrachtet wurde.
+3 Die Babylonier bauten each of their gods a primary temple, das als der Wohnsitz des Gottes angesehen wurde.
+4 Die Babylonier bauten each of their gods a primary temple, das als der Wohnsitz des Gottes angesehen wurde.
+
+19
+0.16590387014219712 0.14991106946711685
+1 The show originally featured amateur voice actors, local to East Texas.
+2 Die Sendung hatte ursprünglich lokale Amateursynchronsprecher aus Ost-Texas.
+3 Die Sendung originally feature Amateur-Synchronsprecher, die örtlich in Ost-Texas lebten.
+4 Die Sendung originally featured amateur voice actors, local to East Texas.
+
+10
+0.1617515631390189 0.14294845713017917
+1 Virtual team members often function as the point of contact for their immediate physical group.
+2 Virtuelle Teammitglieder haben für ihre unmittelbare physische Gruppe oft die Funktion eines Kontaktpunkts.
+3 Virtuelle Teammitglieder fungieren oft als Ansprechpartner für ihre immediate Physical-Gruppe.
+4 Virtual team members sind oft der Ansprechpartner für ihre immediate physische Gruppe.
+
+18
+0.161692143534558 0.13786484252805817
+1 Commons Administrator Adam Cuerden expressed his frustration over the deletions when he spoke to Wikinews last month.
+2 Der Commons-Administrator Adam Cuerden hat seine Enttäuschung über die Entfernungen zum Ausdruck gebracht, als er im letzten Monat mit Wikinews redete.
+3 Der Commons-Verwalter Adam Cuerden hat in letztem Monat his Frustration über die Löschungen Ausdruck given, als er dem Wikinews sprechen durfte.
+4 Commons Administrator Adam Cuerden hat sein Unmut über die Löschungen Ausdruck given when he spoke to Wikinews last month.
+
+2
+0.1487964117124549 0.16188613565728213
+1 Three more bombs exploded near government buildings in a period of two hours.
+2 Drei weitere Bomben detonierten binnen zwei Stunden unweit von Regierungsgebäuden.
+3 Drei weitere Bombenexplosionen ereigneten sich in einer Zeitspanne von zwei Stunden in der Nähe von Regierungsgebäuden.
+4 Drei weitere Bomben explodierten in der Nähe von Regierungsgebäuden within a period of two hours.
+
+27
+0.1352045976914347 0.1712473044894657
+1 However, most signs are indicated only in Catalan because it is established by law as the first official language.
+2 Die meisten Schilder sind jedoch nur in Katalanisch angegeben, da es gesetzlich als erste Amtssprache festgelegt ist.
+3 Doch werden die meisten Schilder nur in Katalanisch angezeigt, because it is established by law as the first official language.
+4 Doch werden die meisten Schilder nur in Katalanisch angezeigt, weil es durch Gesetz als erste offizielle Sprache etabliert ist.
+
+6
+0.13162419335445094 0.12250544116246787
+1 Around 60 cases of malfunctioning iPods overheating have been reported, causing a total of six fires and leaving four people with minor burns.
+2 Es wurden über 60 Fälle von Überhitzung bei defekten iPods gemeldet. Insgesamt wurden dadurch sechs Brände ausgelöst und vier Personen haben leichte Verbrennungen erlitten.
+3 Rund 60 Fälle von defekten iPods mit Überhitzung wurden berichtet, davon sechsmal Brand und vier Menschen mit minorischen Verbrennungen.
+4 Rund 60 Fälle von defektiven iPods, die überhitzt haben, wurden berichtet, was zu sechs Bränden und vier leichten Verbrennungen führte.
+
+0
+0.12673718536830808 0.12673718536830808
+1 The U.S. Corps of Engineers estimated that 6 inches of rainfall could breach the previously damaged levees.
+2 Der US-amerikanische Ingenieurskorps schätzte , dass 6 Zoll Regen die schon zuvor beschädigten Dämme brechen lassen könnten.
+3 Die United States Army Corps of Engineers schätzten ein, dass 6 Zoll Regenausgleich die previously damageierten Deiche überfluten könnte.
+4 Die United States Army Corps of Engineers schätzten ein, dass 6 Zoll Regenfall die previously damaged Levees überfluten könnte.
+
+21
+0.12535343643621313 0.1767874865365185
+1 After the results came in, Gingrich lauded Santorum, but had tough words for Romney, on whose behalf negative campaign advertisements were aired in Iowa against Gingrich.
+2 Nachdem die Ergebnisse vorlagen, lobte Gingrich Santorum, fand aber harte Worte für Romney, in dessen Namen in Iowa negative Kampagnenwerbung gegen Gingrich ausgestrahlt worden war.
+3 Nach den Ergebnissen kamen die Gingrich lobte Santorum, aber hatte scharfe Worte für Romney, auf whose behalf negative campaign advertisements in Iowa against Gingrich aired were.
+4 Nachdem die Ergebnisse bekannt wurden, lobte Gingrich Santorum, aber er hatte scharfe Worte für Romney, gegen whom negative campaign advertisements in Iowa were aired on Gingrich's behalf.
+
+28
+0.11633270842295028 0.5316967153331754
+1 The concept came from China where plum blossoms were the flower of choice
+2 Das Konzept stammt aus China, wo Pflaumenblüten die Blume der Wahl darstellten.
+3 Die Idee kam ursprünglich aus China, where plum blossoms were the flower of choice.
+4 Die Idee stammt aus China, wo die Pflaumenblüten die Blume der Wahl waren.
+
+20
+0.1136930615245481 0.15362208233245514
+1 The final match of the series will take place at Ellis Park in Johannesburg next week, when the Springboks play Australia.
+2 Das Endspiel des Turniers wird nächste Woche im Ellis-Park-Stadion in Johannesburg stattfinden, bei dem die Springboks auf Australien treffen.
+3 Das finale Spiel der Serie findet next week im Ellis Park in Johannesburg statt, als die Springboks gegen Australien antreten.
+4 Das finale Match der Serie wird next week im Ellis Park in Johannesburg stattfinden, als die Springboks gegen Australien antreten.
+
+3
+0.11147139414104815 0.06735938555336447
+1 I don't know if you realize it or not, but most of the goods from Central America came into this country duty-free.
+2 Ich weiß nicht, ob Sie das wussten, aber die meisten Waren aus Mittelamerika kamen zollfrei in unser Land.
+3 Die meisten Waren aus Zentralamerika kamen into this country duty-free.
+4 Die meisten Güter aus Zentralamerika kamen into this country duty-free.
+
+9
+0.10008350737965103 0.042601467364417965
+1 Fortunately, drivers tend to behave within a reasonably consistent range; thus, traffic streams tend to have some reasonable consistency and can be roughly represented mathematically.
+2 Glücklicherweise neigen Autofahrer dazu, sich einigermaßen konsistent zu verhalten; daher haben Verkehrsströme eine gewisse Konstanz und lassen sich mathematisch grob darstellen.
+3 Für glücklicherweise tendieren die Fahrer innerhalb eines vernünftig consistenten Bereichs zu verhalten; daher tendieren Straßenströme zu einer gewissen Regelmäßigkeit und können etwa mathematisch dargestellt werden.
+4 Für glücklicherweise tendieren Fahrer within a reasonably consistent range; thus, traffic streams tend to have some reasonable consistency and can be roughly represented mathematically.
+
+22
+0.0827709751897879 0.09404598499203788
+1 The document, according to the leak, will refer to the borders dispute, which Palestine wants based on the borders before the 1967 Mideast War.
+2 Dem Leak zufolge bezieht sich das Dokument auf den Grenzstreit, in dem die Palästinenser ein Zurücksetzen der Grenzen in den Zustand vor dem Sechstagekrieg von 1967 fordern.
+3 Der Dokumentarfilm, gemäß der Leaks, wird sich mit der Grenzstreitigkeit auseinandersetzen, die Palästina based on the borders vor dem Mideast-Konflikt von 1967 fordert.
+4 Der Dokument, gemäß der Leaks, wird sich auf den Grenzstreit beziehen, den Palästina based on the borders vor dem Mideast-Krieg von 1967 fordert.
+
+35
+0.08097785064266204 0.08097785064266204
+1 Although three people were inside the house when the car impacted it, none of them were hurt.
+2 Obwohl sich drei Menschen im Haus befanden, als das Auto hineinraste, wurde keiner von ihnen verletzt.
+3 Obwohl drei Personen inside the house waren, als der Wagen auf es einschlug, wurden none of them hurt.
+4 Obwohl drei Personen inside the house waren, als der Wagen auf es einschlug, wurden none of them hurt.
+
+14
+0.07561841943212426 0.0566520845731144
+1 This is especially popular with school leavers, allowing them to take a year out before university, without compromising their education.
+2 Das ist besonders bei Schulabsolventen sehr beliebt, da es ihnen ermöglicht, sich vor der Universität ein Jahr frei zu nehmen, ohne dass dabei ihr Studium beeinträchtigt wird.
+3 Dies ist insbesondere bei Schulabgängern beliebt, da sie so eine Auszeit vor dem Studium machen können, ohne ihre Bildung zu kompromittieren.
+4 Dies ist besonders beliebt among school leavers, allowing them to take a year off before university, without compromising their education.
+
+17
+0.07164684238257436 0.06293173924458136
+1 Britain mined international waters to prevent any ships from entering entire sections of ocean, causing danger to even neutral ships.
+2 Großbritannien verminte internationale Gewässer, um zu verhindern, dass Schiffe in ganze Meeresabschnitte vordringen konnten, was selbst für neutrale Schiffe eine Gefahr darstellte.
+3 Großbritannien hat in internationalen Gewässern bergemacht, um entire Sectionen des Ozeans für Schiffe gesperrt zu halten und damit Gefahr für neutralen Schiffen zu caused.
+4 Großbritannien hat in internationalen Gewässern bergemacht, um entire sections of ocean to prevent any ships from entering, causing danger to even neutral ships.
+
+31
+0.06917184228205472 0.09629943614188137
+1 An up-bow usually generates a softer sound, while a down-bow is stronger and more assertive.
+2 Das Aufstreichen generiert üblicherweise einen weicheren Klang, während das Abstreichen kräftiger und ausdrucksstärker ist.
+3 Eine Up-Bow usually generates a softer sound, while a down-bow is stronger and more assertive.
+4 Eine aufwärtsgeführte Bogenführung erzeugt in der Regel ein weicher klingender Klang, während eine abwärtsgeführte Bogenführung stärker und assertiver ist.
+
+25
+0.06108557268562171 0.6006365052597057
+1 Ancient Roman meals couldn't have included foods that came to Europe from America or from Asia in later centuries.
+2 Gerichte des alten Roms konnten keine Nahrungsmittel enthalten, die in späteren Jahrhunderten aus Amerika oder Asien nach Europa kamen.
+3 Alte römische Mahlzeiten could not have included foods that came to Europe from America or from Asia in later centuries.
+4 Alte römische Mahlzeiten konnten keine Lebensmittel einschließen, die in späteren Jahrhunderten aus Amerika oder Asien nach Europa kamen.
+
+24
+0.049498634865374994 0.049498634865374994
+1 He has been unable to take the drugs needed to overcome his pain as they are banned from the Games.
+2 Er war nicht dazu in der Lage, die benötigten Medikamente einzunehmen, um seinen Schmerz zu überwinden, da sie bei den Commonwealth Games verboten sind.
+3 Er ist unable to take the necessary drugs to overcome his pain, because they are banned during the Games.
+4 Er ist unable to take the necessary drugs to overcome his pain, as they are banned from the Games.
+
+33
+0.047973925170118475 0.12425342874478343
+1 Lion prides act much like packs of wolves or dogs, animals surprisingly similar to lions (but not other big cats) in behavior, and also very deadly to their prey.
+2 Löwenrudel agieren ähnlich wie Wolfs- oder Hunderudel, Tiere, die den Löwen (aber nicht anderen Großkatzen) im Verhalten überraschend ähneln und ebenso tödlich gegenüber ihrer Beute sind.
+3 Löwenherden verhalten sich wie Wölfe oder Hunde, Tiere, whose behavior is surprisingly similar to that of lions (but not other big cats), and are also very deadly to their prey.
+4 Löwenherden verhalten sich wie Wölfe oder Hunde, Tiere, die erstaunlich ähnlich wie Löwen (aber nicht wie andere Großkatzen) in ihrem Verhalten sind und auch sehr tödlich für ihre Beute sind.
+
+4
+0.044915755686574035 0.044915755686574035
+1 It also arguably makes reading easier, though writing is somewhat complicated by the need to find out whether a verb or adjective is used in a substantivized form.
+2 Es macht wohl auch das Lesen einfacher, aber das Schreiben ist einigermaßen schwierig, weil man feststellen muss, ob ein Tunwort oder Eigenschaftswort als Hauptwort verwendet wird.
+3 Es arguably makes reading easier, though writing is somewhat complicated by the need to find out whether a verb or adjective is used in a substantivized form.
+4 Es arguably makes reading easier, though writing is somewhat complicated by the need to find out whether a verb or adjective is used in a substantivized form.
+
