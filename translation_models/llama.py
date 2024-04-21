@@ -259,7 +259,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         #logging.info(output)
         #--added start
-
+        #originall sequence with contrastive decoding.
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
         transition_scores_orig = self.model.compute_transition_scores(
