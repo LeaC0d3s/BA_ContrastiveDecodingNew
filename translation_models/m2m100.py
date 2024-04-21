@@ -31,6 +31,7 @@ class EnsembleLogitsProcessor(LogitsProcessor):
             return scores
 
         scores = F.softmax(scores, dim=-1)
+        print("Scores before processing in ELP: ", scores)
 
         batch_size = int(input_ids.size(0) / self.num_beams)
         if self.source_weights is not None:
@@ -42,11 +43,14 @@ class EnsembleLogitsProcessor(LogitsProcessor):
             beam_indices = self.num_beams * torch.arange(batch_size, device=scores.device, dtype=torch.long) + i
             cands = scores[beam_indices]
             mean_scores = torch.log((source_weights.unsqueeze(-1).expand(-1, scores.size(-1)) * cands).sum(dim=0))
+            print("mean_scores from ELP: ", mean_scores)
             for j in beam_indices:
                 scores[j] = mean_scores
 
         if torch.isnan(scores).any():
             scores = torch.nan_to_num(scores, nan=float('-inf'))
+
+        print("scores from the EnsembleLogitsProcessor: ", scores)
 
         return scores
 
