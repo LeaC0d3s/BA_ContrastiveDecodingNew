@@ -288,7 +288,7 @@ class LLaMaTranslationModel(TranslationModel):
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         print(outputs_german.scores)
         print(outputs_german.sequences)
-        #print(outputs_german.past_key_values)
+        print(outputs_german.past_key_values[0][0])
 
         # Initialize empty list to store English translations
         english_translations = []
@@ -303,7 +303,7 @@ class LLaMaTranslationModel(TranslationModel):
             print(self.tokenizer.decode(outputs_german.sequences[0][time_step]))
             if past_key_values_german is not None:
 
-                past_key_values_current = outputs_german.past_key_values[time_step]
+                past_key_values_current = outputs_german.past_key_values[0][time_step]
 
                 english_output = self.model.generate(input_ids=input_ids_en,
                                                      attention_mask=attention_mask_en,
@@ -343,7 +343,7 @@ class LLaMaTranslationModel(TranslationModel):
             english_translations.append(english_output.sequences[:, len(input_ids_en[0])+time_step])
             english_scores += (english_output.scores[time_step],)
 
-            past_key_values_german = outputs_german.past_key_values
+            past_key_values_german = outputs_german.past_key_values[0]
 
         print(english_translations.unsqueeze(0))
         print(self.tokenizer.decode(english_translations.unsqueeze(0)))
