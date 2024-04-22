@@ -274,6 +274,7 @@ class LLaMaTranslationModel(TranslationModel):
             temperature=1.0,
             top_p=1.0,
             # manually added
+            logits=True,
             return_dict_in_generate=True,
             output_scores=True,
             **kwargs,
@@ -286,20 +287,16 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info(outputs_orig)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
-        print(outputs_german.scores)
-        print(outputs_german.sequences)
-        print(outputs_german.past_key_values[0][0])
-        print(len(outputs_german.past_key_values[0][0]))
-        print(len(outputs_german.past_key_values[0]))
-        print(len(outputs_german.past_key_values))
+        print(outputs_german.attention_mask)
+
 
         # Initialize empty list to store English translations
-        english_translations = []
-        english_scores = ()
+        #english_translations = []
+        #english_scores = ()
 
         # Initialize initial past_key_values for English model
-        past_key_values_german = None
-        print(range(len(outputs_german.sequences[0])))
+        #past_key_values_german = None
+        #print(range(len(outputs_german.sequences[0])))
 
         # Generate English translation using past_key_values from German translation
         for time_step in range(len(outputs_german.sequences[0])):
@@ -348,8 +345,42 @@ class LLaMaTranslationModel(TranslationModel):
 
             past_key_values_german = outputs_german.past_key_values[0]
 
-        print(english_translations.unsqueeze(0))
-        print(self.tokenizer.decode(english_translations.unsqueeze(0)))
+        #print(english_translations.unsqueeze(0))
+        #print(self.tokenizer.decode(english_translations.unsqueeze(0)))
+
+        english_input_ids = []  # Store the input_ids for English model at each step
+        english_output_tokens = []  # Store the output tokens for English model at each step
+
+        for i in range(len(outputs_german.sequence[0][input_length:])):
+            # Get the partial German translation at step i
+            partial_german = outputs_german.sequence[0][input_length:][i]
+
+            # Append the partial German translation to the input for the English model
+            english_input_ids.append(partial_german)
+
+            # Generate English translation for the combined input
+            output_english = model_b.generate(
+                input_ids=english_input_ids,
+                num_beams=num_beams,
+                eos_token_id=model_b.tokenizer.eos_token_id,
+                max_length=1200,
+                remove_invalid_values=True,
+                do_sample=False,
+                temperature=1.0,
+                top_p=1.0,
+                logits=True,
+                return_dict_in_generate=True,
+                output_scores=True,
+                **kwargs,
+            )
+
+            # Store the output tokens for the English model at step i
+            english_output_tokens.append(output_english["sequences"][i])
+
+        # Step 3: Display the incremental translations
+        for i in range(len(english_input_ids)):
+            print("Partial German:", tokenizer_de.decode(english_input_ids[i]))
+            print("Partial English:", tokenizer_en.decode(english_output_tokens[i]))
 
         #logging.info(output)
         #--added start
@@ -358,8 +389,8 @@ class LLaMaTranslationModel(TranslationModel):
             outputs.sequences, outputs.scores, normalize_logits=True)
         transition_scores_orig = self.model.compute_transition_scores(
             outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
-        transition_scores_experiment = self.model.compute_transition_scores(
-            english_translations.unsqueeze(0), english_scores, normalize_logits=True)
+        #transition_scores_experiment = self.model.compute_transition_scores(
+            #english_translations.unsqueeze(0), english_scores, normalize_logits=True)
 
         #logging.info(transition_scores)
 
