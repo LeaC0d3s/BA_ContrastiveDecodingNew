@@ -288,6 +288,7 @@ class LLaMaTranslationModel(TranslationModel):
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         print(outputs_german.scores)
         print(outputs_german.sequences)
+        print(outputs_german.past_key_values)
 
         # Initialize empty list to store English translations
         english_translations = []
