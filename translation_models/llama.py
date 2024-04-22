@@ -212,7 +212,15 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info("Input_ids after padding", input_ids)
         #input_enc = self.tokenizer.batch_encode_plus(inputs, return_tensor="pt", add_special_tokens=True, truncation=True, padding=self.padding)
         input_ids = torch.tensor(input_ids).to(self.model.device)
+        input_ids_de = torch.tensor(input_ids[0]).to(self.model.device)
+        input_ids_en = torch.tensor(input_ids[1]).to(self.model.device)
+
+
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
+        attention_mask_de = torch.tensor(attention_mask[0]).to(self.model.device)
+        attention_mask_en = torch.tensor(attention_mask[1]).to(self.model.device)
+
+
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
         ])
@@ -251,13 +259,68 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
+        outputs_german = self.model.generate(
+            input_ids=input_ids_de,
+            attention_mask=attention_mask_de,
+            num_beams=num_beams,
+            eos_token_id=self.tokenizer.eos_token_id,
+            max_length=1200,
+            # logits_processor=logits_processor,
+            remove_invalid_values=True,
+            # Disable sampling
+            do_sample=False,
+            temperature=1.0,
+            top_p=1.0,
+            # manually added
+            return_dict_in_generate=True,
+            output_scores=True,
+            **kwargs,
+        )
+
+
 
 
         #logging.info(outputs)
         #logging.info(outputs_orig)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
-        print(outputs_orig)
+        print(outputs_german)
+        print(outputs_german.sequences)
+
+        # Initialize empty list to store English translations
+        english_translations = []
+
+        # Initialize initial past_key_values for English model
+        past_key_values_german = None
+
+        # Generate English translation using past_key_values from German translation
+        for time_step in range(len(outputs_german.sequences[0])):
+            print(self.tokenizer.decode(outputs_german.sequences[0][time_step]))
+            # Generate English translation using past_key_values from German translation
+            past_key_values_current = past_key_values_german[:, :,time_step] if past_key_values_german is not None else None
+
+            english_output = self.model.generate(input_ids=input_ids_en,
+                                                 attention_mask=attention_mask_en,
+                                                 num_beams=num_beams,
+                                                 eos_token_id=self.tokenizer.eos_token_id,
+                                                 max_length=1200,
+                                                 # logits_processor=logits_processor,
+                                                 remove_invalid_values=True,
+                                                 # Disable sampling
+                                                 do_sample=False,
+                                                 temperature=1.0,
+                                                 top_p=1.0,
+                                                 past_key_values=past_key_values_current,
+                                                 return_dict_in_generate=True,
+                                                 output_scores=True,
+                                                 **kwargs,)
+
+            # Append English translation to list
+            english_translations.append(english_output.sequences[:, :1])
+            past_key_values_german = outputs_german.past_key_values
+
+        print(english_translations)
+
         #logging.info(output)
         #--added start
         #originall sequence with contrastive decoding.
