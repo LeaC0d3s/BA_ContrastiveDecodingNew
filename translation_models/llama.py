@@ -266,7 +266,7 @@ class LLaMaTranslationModel(TranslationModel):
         transition_scores_orig = self.model.compute_transition_scores(
             outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
         transition_scores_experiment = self.model.compute_transition_scores(
-            outputs_orig.sequences[1], outputs.scores[0],normalize_logits=True)
+            outputs_orig.sequences, outputs.scores, normalize_logits=True)
 
         #logging.info(transition_scores)
 
@@ -312,7 +312,7 @@ class LLaMaTranslationModel(TranslationModel):
             save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
         print("mixing english generated tokens with CD scores...: ")
-        for tok, score in zip(generated_tokens_orig_en, transition_scores_experiment):
+        for tok, score in zip(generated_tokens_orig_en, transition_scores_experiment[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
 
