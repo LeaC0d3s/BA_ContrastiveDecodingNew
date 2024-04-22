@@ -287,6 +287,7 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info(outputs_orig)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
+        print(outputs_german)
         print(outputs_german.attention_mask)
 
 
