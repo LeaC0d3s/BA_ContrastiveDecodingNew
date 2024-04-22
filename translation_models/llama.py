@@ -257,7 +257,7 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info(outputs_orig)
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
-
+        print(outputs_orig)
         #logging.info(output)
         #--added start
         #originall sequence with contrastive decoding.
@@ -281,7 +281,23 @@ class LLaMaTranslationModel(TranslationModel):
         decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
         generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
         decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
+        # Loop over each time step in the generated sequence
+        for time_step in range(input_length):
+            # Get token at the current time step for both German and English translations
+            token_german = generated_tokens_orig_de[time_step]
+            token_english = generated_tokens_orig_en[time_step]
 
+            # Get probability distributions of the next token after the current token for German and English translations
+            next_token_probs_german = torch.softmax(outputs_german[0]['logits'][0][time_step], dim=-1)
+            next_token_probs_english = torch.softmax(outputs_english[0]['logits'][0][time_step], dim=-1)
+
+            # Print or store the token probabilities for comparison
+            print(f"Time Step {time_step + 1}:")
+            print(f"Token (German): {tokenizer.decode([token_german])}")
+            print(f"Next Token Probabilities (German): {next_token_probs_german}")
+            print(f"Token (English): {tokenizer.decode([token_english])}")
+            print(f"Next Token Probabilities (English): {next_token_probs_english}")
+            print("\n")
 
         # Initialize an empty list to store tuple
         # s
@@ -293,7 +309,7 @@ class LLaMaTranslationModel(TranslationModel):
         logging.info(self.tokenizer.decode(generated_tokens))
 
         print("de sent with 'translate to German-English scores'...: ")
-        for tok, score in zip(generated_tokens, transition_scores[0][input_length:]):
+        for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
             save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
@@ -301,20 +317,20 @@ class LLaMaTranslationModel(TranslationModel):
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
 
         print("de sent with 'translate to German scores'...: ")
-        for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0][input_length:]):
+        for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_de.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_en))
 
         print("en sent with 'translate to English scores'...: ")
-        for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1][input_length_orig_en:]):
+        for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
 
-        print("mixing english generated tokens with German scores...: ")
-        for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[0][input_length:]):
-            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+        #print("mixing english generated tokens with German scores...: ")
+        #for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[0]):
+            #logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
 
 
