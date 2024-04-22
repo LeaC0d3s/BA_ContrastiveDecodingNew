@@ -43,7 +43,6 @@ class EnsembleLogitsProcessor(LogitsProcessor):
             beam_indices = self.num_beams * torch.arange(batch_size, device=scores.device, dtype=torch.long) + i
             cands = scores[beam_indices]
             mean_scores = torch.log((source_weights.unsqueeze(-1).expand(-1, scores.size(-1)) * cands).sum(dim=0))
-            print("mean_scores from ELP: ", mean_scores)
             for j in beam_indices:
                 scores[j] = mean_scores
 
