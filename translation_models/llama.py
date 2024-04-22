@@ -304,24 +304,40 @@ class LLaMaTranslationModel(TranslationModel):
             if past_key_values_german is not None:
 
                 past_key_values_current = outputs_german.past_key_values[time_step]
+
+                english_output = self.model.generate(input_ids=input_ids_en,
+                                                     attention_mask=attention_mask_en,
+                                                     num_beams=num_beams,
+                                                     eos_token_id=self.tokenizer.eos_token_id,
+                                                     max_length=1200,
+                                                     # logits_processor=logits_processor,
+                                                     remove_invalid_values=True,
+                                                     # Disable sampling
+                                                     do_sample=False,
+                                                     temperature=1.0,
+                                                     top_p=1.0,
+                                                     past_key_values=past_key_values_current,
+                                                     return_dict_in_generate=True,
+                                                     output_scores=True,
+                                                     **kwargs, )
             else:
-                past_key_values_current = None
+                english_output = self.model.generate(input_ids=input_ids_en,
+                                                     attention_mask=attention_mask_en,
+                                                     num_beams=num_beams,
+                                                     eos_token_id=self.tokenizer.eos_token_id,
+                                                     max_length=1200,
+                                                     # logits_processor=logits_processor,
+                                                     remove_invalid_values=True,
+                                                     # Disable sampling
+                                                     do_sample=False,
+                                                     temperature=1.0,
+                                                     top_p=1.0,
+                                                     #past_key_values=past_key_values_current,
+                                                     return_dict_in_generate=True,
+                                                     output_scores=True,
+                                                     **kwargs, )
             # Generate English translation using past_key_values from German translation
-            english_output = self.model.generate(input_ids=input_ids_en,
-                                                 attention_mask=attention_mask_en,
-                                                 num_beams=num_beams,
-                                                 eos_token_id=self.tokenizer.eos_token_id,
-                                                 max_length=1200,
-                                                 # logits_processor=logits_processor,
-                                                 remove_invalid_values=True,
-                                                 # Disable sampling
-                                                 do_sample=False,
-                                                 temperature=1.0,
-                                                 top_p=1.0,
-                                                 past_key_values=past_key_values_current,
-                                                 return_dict_in_generate=True,
-                                                 output_scores=True,
-                                                 **kwargs,)
+
 
             # Append English translation to list
             english_translations.append(english_output.sequences[:, len(input_ids_en[0])+time_step])
