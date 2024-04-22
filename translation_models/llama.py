@@ -298,9 +298,13 @@ class LLaMaTranslationModel(TranslationModel):
         # Generate English translation using past_key_values from German translation
         for time_step in range(len(outputs_german.sequences[0])):
             print(self.tokenizer.decode(outputs_german.sequences[0][time_step]))
+            past_key_values_current = ()
+            if past_key_values_german is not None:
+                for key_value in past_key_values_german:
+                    past_key_values_current += (key_value[:, :, time_step],)
+            else:
+                past_key_values_current = None
             # Generate English translation using past_key_values from German translation
-            past_key_values_current = past_key_values_german[:, :,time_step] if past_key_values_german is not None else None
-
             english_output = self.model.generate(input_ids=input_ids_en,
                                                  attention_mask=attention_mask_en,
                                                  num_beams=num_beams,
