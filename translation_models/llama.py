@@ -291,6 +291,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         # Initialize empty list to store English translations
         english_translations = []
+        english_scores = ()
 
         # Initialize initial past_key_values for English model
         past_key_values_german = None
@@ -298,10 +299,9 @@ class LLaMaTranslationModel(TranslationModel):
         # Generate English translation using past_key_values from German translation
         for time_step in range(len(outputs_german.sequences[0])):
             print(self.tokenizer.decode(outputs_german.sequences[0][time_step]))
-            past_key_values_current = ()
             if past_key_values_german is not None:
-                for key_value in past_key_values_german:
-                    past_key_values_current += (key_value[:, :, time_step],)
+
+                past_key_values_current = outputs_german.past_key_values[time_step]
             else:
                 past_key_values_current = None
             # Generate English translation using past_key_values from German translation
@@ -322,10 +322,13 @@ class LLaMaTranslationModel(TranslationModel):
                                                  **kwargs,)
 
             # Append English translation to list
-            english_translations.append(english_output.sequences[:, :1])
+            english_translations.append(english_output.sequences[:, len(input_ids_en[0])+time_step])
+            english_scores.append(english_output.scores[:, len(input_ids_en[0]) + time_step])
+
             past_key_values_german = outputs_german.past_key_values
 
-        print(english_translations)
+        print(english_translations.unsqueeze(0))
+        print(self.tokenizer.decode(english_translations.unsqueeze(0)))
 
         #logging.info(output)
         #--added start
@@ -334,8 +337,8 @@ class LLaMaTranslationModel(TranslationModel):
             outputs.sequences, outputs.scores, normalize_logits=True)
         transition_scores_orig = self.model.compute_transition_scores(
             outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
-        #transition_scores_experiment = self.model.compute_transition_scores(
-            #outputs_orig.sequences, outputs.scores, normalize_logits=True)
+        transition_scores_experiment = self.model.compute_transition_scores(
+            english_translations.unsqueeze(0), english_scores, normalize_logits=True)
 
         #logging.info(transition_scores)
 
@@ -366,25 +369,26 @@ class LLaMaTranslationModel(TranslationModel):
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
-            save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
+            save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
 
         print("de sent with 'translate to German scores'...: ")
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_de.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
+            save_origin_probs_de.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
+
+        print("mixing english generated tokens based on German past_key_values ...: ")
+        for tok, score in zip(generated_tokens_orig_en, transition_scores_experiment):
+            logging.info(
+                f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_en))
-
         print("en sent with 'translate to English scores'...: ")
         for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):2%}"))
+            save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
-        #print("mixing english generated tokens with German scores...: ")
-        #for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[0]):
-            #logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
 
 
