@@ -282,22 +282,7 @@ class LLaMaTranslationModel(TranslationModel):
         generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
         decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
         # Loop over each time step in the generated sequence
-        for time_step in range(input_length):
-            # Get token at the current time step for both German and English translations
-            token_german = generated_tokens_orig_de[time_step]
-            token_english = generated_tokens_orig_en[time_step]
 
-            # Get probability distributions of the next token after the current token for German and English translations
-            next_token_probs_german = torch.softmax(outputs_german[0]['logits'][0][time_step], dim=-1)
-            next_token_probs_english = torch.softmax(outputs_english[0]['logits'][0][time_step], dim=-1)
-
-            # Print or store the token probabilities for comparison
-            print(f"Time Step {time_step + 1}:")
-            print(f"Token (German): {tokenizer.decode([token_german])}")
-            print(f"Next Token Probabilities (German): {next_token_probs_german}")
-            print(f"Token (English): {tokenizer.decode([token_english])}")
-            print(f"Next Token Probabilities (English): {next_token_probs_english}")
-            print("\n")
 
         # Initialize an empty list to store tuple
         # s
