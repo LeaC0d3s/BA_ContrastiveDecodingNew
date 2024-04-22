@@ -212,13 +212,13 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info("Input_ids after padding", input_ids)
         #input_enc = self.tokenizer.batch_encode_plus(inputs, return_tensor="pt", add_special_tokens=True, truncation=True, padding=self.padding)
         input_ids = torch.tensor(input_ids).to(self.model.device)
-        input_ids_de = torch.tensor(input_ids[0]).to(self.model.device)
-        input_ids_en = torch.tensor(input_ids[1]).to(self.model.device)
+        input_ids_de = torch.tensor([input_ids[0]]).to(self.model.device)
+        input_ids_en = torch.tensor([input_ids[1]]).to(self.model.device)
 
 
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
-        attention_mask_de = torch.tensor([attention_mask[0]]).to(self.model.device)
-        attention_mask_en = torch.tensor([attention_mask[1]]).to(self.model.device)
+        attention_mask_de = torch.tensor(attention_mask[0]).to(self.model.device)
+        attention_mask_en = torch.tensor(attention_mask[1]).to(self.model.device)
 
 
         logits_processor = LogitsProcessorList([
