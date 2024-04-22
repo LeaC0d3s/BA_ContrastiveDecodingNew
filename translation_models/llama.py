@@ -291,6 +291,7 @@ class LLaMaTranslationModel(TranslationModel):
         print(outputs_german.past_key_values[0][0])
         print(len(outputs_german.past_key_values[0]))
         print(len(outputs_german.past_key_values[0][0]))
+        print(outputs_german.past_key_values[0][0])
 
         # Initialize empty list to store English translations
         english_translations = []
