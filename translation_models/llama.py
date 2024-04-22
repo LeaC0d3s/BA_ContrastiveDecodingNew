@@ -296,6 +296,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         # Initialize initial past_key_values for English model
         past_key_values_german = None
+        print(range(len(outputs_german.sequences[0])))
 
         # Generate English translation using past_key_values from German translation
         for time_step in range(len(outputs_german.sequences[0])):
