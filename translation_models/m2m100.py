@@ -31,7 +31,7 @@ class EnsembleLogitsProcessor(LogitsProcessor):
             return scores
 
         scores = F.softmax(scores, dim=-1)
-        print("Scores before processing in ELP: ", scores)
+        #print("Scores before processing in ELP: ", scores)
 
         batch_size = int(input_ids.size(0) / self.num_beams)
         #print("batch size: ", batch_size)
@@ -53,7 +53,7 @@ class EnsembleLogitsProcessor(LogitsProcessor):
         if torch.isnan(scores).any():
             scores = torch.nan_to_num(scores, nan=float('-inf'))
 
-        print("scores from the EnsembleLogitsProcessor: ", scores)
+        #print("scores from the EnsembleLogitsProcessor: ", scores)
 
         return scores
 
