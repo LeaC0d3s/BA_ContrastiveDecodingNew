@@ -323,7 +323,7 @@ class LLaMaTranslationModel(TranslationModel):
 
             # Append English translation to list
             english_translations.append(english_output.sequences[:, len(input_ids_en[0])+time_step])
-            english_scores += (english_output.scores[:, len(input_ids_en[0]) + time_step],)
+            english_scores += (english_output.scores[len(input_ids_en[0]) + time_step],)
 
             past_key_values_german = outputs_german.past_key_values
 
