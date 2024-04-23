@@ -274,7 +274,8 @@ class LLaMaTranslationModel(TranslationModel):
             temperature=1.0,
             top_p=1.0,
             # manually added
-            logits=True,
+            output_logits=True,
+            output_attentions=True,
             return_dict_in_generate=True,
             output_scores=True,
             **kwargs,
@@ -288,7 +289,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         print(outputs_german)
-        print(outputs_german.attention_mask)
+        print(outputs_german.attentions)
 
 
         # Initialize empty list to store English translations
