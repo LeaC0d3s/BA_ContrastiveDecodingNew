@@ -191,7 +191,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         input_ids = [x['input_ids'][0].tolist() for x in inputs]
         attention_mask = [x['attention_mask'][0].tolist() for x in inputs]
-        logging.info("Input_ids before padding", input_ids, attention_mask)
+        #logging.info("Input_ids before padding", input_ids, attention_mask)
 
         pad_token_id = self.tokenizer.get_vocab()["▁"]
         max_len = max(len(x) for x in input_ids)
@@ -209,10 +209,10 @@ class LLaMaTranslationModel(TranslationModel):
                                      [0] * (max_len - len(attention_mask[i])) +
                                      attention_mask[i][second_inst_idx + 1:])
 
-        logging.info("Input_ids after padding", input_ids, attention_mask)
+        #logging.info("Input_ids after padding", input_ids, attention_mask)
         #input_enc = self.tokenizer.batch_encode_plus(inputs, return_tensor="pt", add_special_tokens=True, truncation=True, padding=self.padding)
         input_ids = torch.tensor(input_ids).to(self.model.device)
-        print(input_ids.shape, input_ids[0].shape)
+        #print(input_ids.shape, input_ids[0].shape)
         input_ids_de = torch.tensor(input_ids[0].unsqueeze(0)).to(self.model.device)
         input_ids_en = torch.tensor(input_ids[1].unsqueeze(0)).to(self.model.device)
 
@@ -225,7 +225,7 @@ class LLaMaTranslationModel(TranslationModel):
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
         ])
-        print(logits_processor)
+        #print(logits_processor)
 
         outputs = self.model.generate(
             input_ids=input_ids,
@@ -299,7 +299,10 @@ class LLaMaTranslationModel(TranslationModel):
         fixed_decoding_de_trans = []
         fixed_decoding_en = []
         fixed_decoding_en_trans = []
+        fixed_token = []
         for tok in cd_tokens:
+            if tok == 2:
+                break
             # Add the current token to the input IDs
             input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]]).to(self.model.device)], dim=1)
             input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]]).to(self.model.device)], dim=1)
@@ -355,6 +358,7 @@ class LLaMaTranslationModel(TranslationModel):
             fixed_decoding_en_trans.append(
                 self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
                                                      normalize_logits=True))
+            fixed_token.append(tok)
 
         #logging.info(output)
         #--added start
@@ -399,10 +403,10 @@ class LLaMaTranslationModel(TranslationModel):
             save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
         print("CD base input incrementally increased: ")
-        for e in fixed_decoding_en:
-            print(self.tokenizer.decode(e))
-        for g in fixed_decoding_de:
-            print(self.tokenizer.decode(g))
+        for t, e in zip(fixed_token, fixed_decoding_en):
+            print(t, "\n", self.tokenizer.decode(e))
+        for t, g in zip(fixed_token, fixed_decoding_de):
+            print(t, "\n", self.tokenizer.decode(g))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         print("de sent with 'translate to German scores'...: ")
