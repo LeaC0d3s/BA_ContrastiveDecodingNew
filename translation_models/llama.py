@@ -399,6 +399,8 @@ class LLaMaTranslationModel(TranslationModel):
         save_origin_probs_en = []
         save_origin_translation = [str(decoded_de), str(decoded_en)]
         save_probs = []
+        save_all_fixed_encoding_en = []
+        save_all_fixed_encoding_de = []
 
 
 
@@ -407,25 +409,34 @@ class LLaMaTranslationModel(TranslationModel):
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
-            save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
+            save_probs.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
         print("CD base input incrementally increased (English): ")
         #print(fixed_decoding_en, fixed_decoding_en_trans)
         for idx, enc in enumerate(fixed_decoding_en):
-            print("fixed up to here: ", fixed_token[idx].cpu())
+            print("fixed up to here: ", int(fixed_token[idx].cpu()))
             #print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
+            save_fixed_encoding_en = []
             for tok, score in zip(enc, fixed_decoding_en_trans[idx][0]):
                 logging.info(
                     f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-
+                save_fixed_encoding_en.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
+                                   float(np.round(score.cpu().numpy(), decimals=4)),
+                                   f"{np.exp(score.cpu().numpy()):.2%}"))
+            save_all_fixed_encoding_en.append([int(fixed_token[idx].cpu()), save_fixed_encoding_en])
 
         print("CD base input incrementally increased (German): ")
         for idx, enc in enumerate(fixed_decoding_de):
-            print("fixed up to here: ", fixed_token[idx].cpu())
+            print("fixed up to here: ", int(fixed_token[idx].cpu()))
             # print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
+            save_fixed_encoding_de = []
             for tok, score in zip(enc, fixed_decoding_de_trans[idx][0]):
                 logging.info(
-                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok.cpu()):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+                save_fixed_encoding_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
+                                               float(np.round(score.cpu().numpy(), decimals=4)),
+                                               f"{np.exp(score.cpu().numpy()):.2%}"))
+            save_all_fixed_encoding_de.append([int(fixed_token[idx].cpu()), save_fixed_encoding_de])
 
 
 
@@ -433,7 +444,7 @@ class LLaMaTranslationModel(TranslationModel):
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_de.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
+            save_origin_probs_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
 
 
@@ -470,7 +481,7 @@ class LLaMaTranslationModel(TranslationModel):
         else:
             translation = response_lines[0].strip()
 
-        return translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en
+        return translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en, save_all_fixed_encoding_de, save_all_fixed_encoding_en
 
 
 class PromptTemplate:
