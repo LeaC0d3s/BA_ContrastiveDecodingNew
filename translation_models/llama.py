@@ -301,13 +301,13 @@ class LLaMaTranslationModel(TranslationModel):
         fixed_decoding_en_trans = []
         for tok in cd_tokens:
             # Add the current token to the input IDs
-            input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]])], dim=1)
-            input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]])], dim=1)
+            input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]]).to(self.model.device)], dim=1)
+            input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]]).to(self.model.device)], dim=1)
 
 
             # Update the attention mask to consider the new token
-            attention_mask_de = torch.cat([attention_mask_de, torch.ones_like(attention_mask_de[:, :1])], dim=1)
-            attention_mask_en = torch.cat([attention_mask_en, torch.ones_like(attention_mask_en[:, :1])], dim=1)
+            attention_mask_de = torch.cat([attention_mask_de, torch.ones_like(attention_mask_de[:, :1]).to(self.model.device)], dim=1)
+            attention_mask_en = torch.cat([attention_mask_en, torch.ones_like(attention_mask_en[:, :1]).to(self.model.device)], dim=1)
 
 
             outputs_german = self.model.generate(
