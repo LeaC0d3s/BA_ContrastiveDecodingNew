@@ -408,14 +408,14 @@ class LLaMaTranslationModel(TranslationModel):
 
 
 
-        print("de sent with 'translate to German-English scores'...: ")
+        print("en sent with 'translate to German-English scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens))
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
             save_probs.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
-        print("CD base input incrementally increased (English): ")
+        print("CD base input incrementally increased (Translate to English): ")
         #print(fixed_decoding_en, fixed_decoding_en_trans)
         for idx, enc in enumerate(fixed_decoding_en):
             print("fixed up to here: ", int(fixed_token[idx].cpu()))
@@ -429,7 +429,7 @@ class LLaMaTranslationModel(TranslationModel):
                                    f"{np.exp(score.cpu().numpy()):.2%}"))
             save_all_fixed_encoding_en.append([int(fixed_token[idx].cpu()), save_fixed_encoding_en])
 
-        print("CD base input incrementally increased (German): ")
+        print("CD base input incrementally increased (Translate to German): ")
         for idx, enc in enumerate(fixed_decoding_de):
             print("fixed up to here: ", int(fixed_token[idx].cpu()))
             # print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
@@ -444,7 +444,7 @@ class LLaMaTranslationModel(TranslationModel):
 
 
 
-        print("de sent with 'translate to German scores'...: ")
+        print("en sent with 'translate to German scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             #logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
