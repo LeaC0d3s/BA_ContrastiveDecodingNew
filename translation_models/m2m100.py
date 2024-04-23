@@ -42,7 +42,7 @@ class EnsembleLogitsProcessor(LogitsProcessor):
             source_weights = 1/(batch_size-1) * torch.ones((batch_size,), device=scores.device)
         for i in range(self.num_beams):
             beam_indices = self.num_beams * torch.arange(batch_size, device=scores.device, dtype=torch.long) + i
-            print("beam_indices: ", beam_indices, "i: ",i)
+            #print("beam_indices: ", beam_indices, "i: ",i)
             cands = scores[beam_indices]
             #print("cands: ", cands)
             mean_scores = torch.log((source_weights.unsqueeze(-1).expand(-1, scores.size(-1)) * cands).sum(dim=0))
