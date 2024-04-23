@@ -407,8 +407,10 @@ class LLaMaTranslationModel(TranslationModel):
             save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
         print("CD base input incrementally increased (English): ")
+        print(fixed_decoding_en, fixed_decoding_en_trans)
         for idx, enc in enumerate(fixed_decoding_en):
             print("fixed up to here: ", fixed_token[idx].cpu())
+            print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
             for tok, score in zip(enc, fixed_decoding_en_trans[idx][0]):
                 logging.info(
                     f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
