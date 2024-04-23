@@ -400,9 +400,10 @@ class LLaMaTranslationModel(TranslationModel):
         save_origin_translation = [str(decoded_de), str(decoded_en)]
         save_probs = []
 
-        logging.info(self.tokenizer.decode(generated_tokens))
+
 
         print("de sent with 'translate to German-English scores'...: ")
+        logging.info(self.tokenizer.decode(generated_tokens))
         for tok, score in zip(generated_tokens, transition_scores[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
@@ -412,25 +413,32 @@ class LLaMaTranslationModel(TranslationModel):
         #print(fixed_decoding_en, fixed_decoding_en_trans)
         for idx, enc in enumerate(fixed_decoding_en):
             print("fixed up to here: ", fixed_token[idx].cpu())
-            print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
+            #print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
             for tok, score in zip(enc, fixed_decoding_en_trans[idx][0]):
                 logging.info(
                     f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
 
         print("CD base input incrementally increased (German): ")
-        for t, g in zip(fixed_token, fixed_decoding_de):
-            print(t.cpu(), "\n", self.tokenizer.decode(g))
+        for idx, enc in enumerate(fixed_decoding_de):
+            print("fixed up to here: ", fixed_token[idx].cpu())
+            # print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
+            for tok, score in zip(enc, fixed_decoding_de_trans[idx][0]):
+                logging.info(
+                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
-        logging.info(self.tokenizer.decode(generated_tokens_orig_de))
+
+
         print("de sent with 'translate to German scores'...: ")
+        logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_de.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
 
-        logging.info(self.tokenizer.decode(generated_tokens_orig_en))
+
         print("en sent with 'translate to English scores'...: ")
+        logging.info(self.tokenizer.decode(generated_tokens_orig_en))
         for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
