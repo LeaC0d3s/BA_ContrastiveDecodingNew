@@ -412,7 +412,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         print("CD base input incrementally increased (German): ")
         for t, g in zip(fixed_token, fixed_decoding_de):
-            print(t, "\n", self.tokenizer.decode(g))
+            print(t.cpu(), "\n", self.tokenizer.decode(g))
 
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         print("de sent with 'translate to German scores'...: ")
