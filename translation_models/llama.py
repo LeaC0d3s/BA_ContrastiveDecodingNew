@@ -354,11 +354,11 @@ class LLaMaTranslationModel(TranslationModel):
                 output_scores=True,
                 **kwargs,
             )
-            fixed_decoding_de.append(outputs_german.sequences[0][input_ids_de.shape[0]:])
+            fixed_decoding_de.append(outputs_german.sequences[0][input_ids_de.shape[1]:])
             fixed_decoding_de_trans.append(self.model.compute_transition_scores(outputs_german.sequences,
                                                                                  outputs_german.scores,
                                                                                  normalize_logits=True))
-            fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[0]:])
+            fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[1]:])
             #print("transition scores before entering the list: ", self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
             #normalize_logits=True), outputs_english.sequences, outputs_english.scores)
             fixed_decoding_en_trans.append(
