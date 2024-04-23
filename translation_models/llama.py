@@ -386,7 +386,7 @@ class LLaMaTranslationModel(TranslationModel):
         decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
         # Loop over each time step in the generated sequence
 
-        print(outputs.sequences[0][input_length:])
+        #print(outputs.sequences[0][input_length:])
         #cd_tokens = outputs.sequences[0][input_length:]
 
 
