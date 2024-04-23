@@ -354,13 +354,13 @@ class LLaMaTranslationModel(TranslationModel):
                 output_scores=True,
                 **kwargs,
             )
-            fixed_decoding_de.append(outputs_german.sequences[0][input_length:])
+            fixed_decoding_de.append(outputs_german.sequences[0][input_ids_de.shape[0]:])
             fixed_decoding_de_trans.append(self.model.compute_transition_scores(outputs_german.sequences,
                                                                                  outputs_german.scores,
                                                                                  normalize_logits=True))
-            fixed_decoding_en.append(outputs_english.sequences[0][input_length_orig_en:])
-            print("transition scores before entering the list: ", self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
-                                                     normalize_logits=True), outputs_english.sequences, outputs_english.scores)
+            fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[0]:])
+            #print("transition scores before entering the list: ", self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
+            #normalize_logits=True), outputs_english.sequences, outputs_english.scores)
             fixed_decoding_en_trans.append(
                 self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
                                                      normalize_logits=True))
@@ -409,11 +409,11 @@ class LLaMaTranslationModel(TranslationModel):
             save_probs.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
         print("CD base input incrementally increased (English): ")
-        print(fixed_decoding_en, fixed_decoding_en_trans)
+        #print(fixed_decoding_en, fixed_decoding_en_trans)
         for idx, enc in enumerate(fixed_decoding_en):
             print("fixed up to here: ", fixed_token[idx].cpu())
             print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
-            for tok, score in zip(enc, fixed_decoding_en_trans[idx][0]):
+            for tok, score in zip(enc[idx:], fixed_decoding_en_trans[idx][0]):
                 logging.info(
                     f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
