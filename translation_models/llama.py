@@ -260,7 +260,8 @@ class LLaMaTranslationModel(TranslationModel):
             return_dict_in_generate=True,
             output_scores=True,
             **kwargs,
-        )"""
+        )
+        """
         outputs_german = self.model.generate(
             input_ids=input_ids_de,
             attention_mask=attention_mask_de,
