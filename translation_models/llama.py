@@ -304,8 +304,8 @@ class LLaMaTranslationModel(TranslationModel):
             if tok == 2:
                 break
             # Add the current token to the input IDs
-            print(input_ids_de.shape, attention_mask_de.shape)
-            print(input_ids_en.shape, attention_mask_en.shape)
+            #print(input_ids_de.shape, attention_mask_de.shape)
+            #print(input_ids_en.shape, attention_mask_en.shape)
             input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]]).to(self.model.device)], dim=1)
             input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]]).to(self.model.device)], dim=1)
 
@@ -313,8 +313,8 @@ class LLaMaTranslationModel(TranslationModel):
             # Update the attention mask to consider the new token
             attention_mask_de = torch.cat([attention_mask_de, torch.ones_like(attention_mask_de[:, :1]).to(self.model.device)], dim=1)
             attention_mask_en = torch.cat([attention_mask_en, torch.ones_like(attention_mask_en[:, :1]).to(self.model.device)], dim=1)
-            print(input_ids_de.shape, attention_mask_de.shape)
-            print(input_ids_en.shape, attention_mask_en.shape)
+            #print(input_ids_de.shape, attention_mask_de.shape)
+            #print(input_ids_en.shape, attention_mask_en.shape)
 
 
             outputs_german = self.model.generate(
@@ -359,6 +359,8 @@ class LLaMaTranslationModel(TranslationModel):
                                                                                  outputs_german.scores,
                                                                                  normalize_logits=True))
             fixed_decoding_en.append(outputs_english.sequences[0][input_length_orig_en:])
+            print("transition scores before entering the list: ", self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
+                                                     normalize_logits=True), outputs_english.sequences, outputs_english.scores)
             fixed_decoding_en_trans.append(
                 self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
                                                      normalize_logits=True))
