@@ -333,8 +333,8 @@ class LLaMaTranslationModel(TranslationModel):
             )
 
             outputs_english = self.model.generate(
-                input_ids=input_ids_de,
-                attention_mask=attention_mask_de,
+                input_ids=input_ids_en,
+                attention_mask=attention_mask_en,
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
                 max_length=1200,
