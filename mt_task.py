@@ -138,9 +138,9 @@ class MTTask:
             with open(str(self.out_dir)+"/"+file_name+".probs_orig_en.json", 'w') as f:
                 json.dump(origin_translation_probs_en, f)
             with open(str(self.out_dir)+"/"+file_name+".probs_de_with_fixed_incremental_cd.json", "w")as f:
-                json.dump(fixed_decoding_ids_de)
+                json.dump(fixed_decoding_ids_de, f)
             with open(str(self.out_dir) + "/" + file_name + ".probs_en_with_fixed_incremental_cd.json", "w") as f:
-                json.dump(fixed_decoding_ids_en)
+                json.dump(fixed_decoding_ids_en, f)
 
         if not os.path.isfile(str(self.out_dir)+"/"+"ref.text"):
             #file_path = "de_selected_ref.txt"
