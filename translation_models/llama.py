@@ -327,6 +327,7 @@ class LLaMaTranslationModel(TranslationModel):
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
                 max_length=1200,
+                max_new_tokens=2,
                 # logits_processor=logits_processor,
                 remove_invalid_values=True,
                 # Disable sampling
@@ -346,6 +347,7 @@ class LLaMaTranslationModel(TranslationModel):
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
                 max_length=1200,
+                max_new_tokens=2,
                 # logits_processor=logits_processor,
                 remove_invalid_values=True,
                 # Disable sampling
