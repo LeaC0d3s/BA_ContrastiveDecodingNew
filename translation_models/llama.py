@@ -449,7 +449,7 @@ class LLaMaTranslationModel(TranslationModel):
         print("en sent with 'translate to German scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
-            #logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
 
@@ -457,7 +457,7 @@ class LLaMaTranslationModel(TranslationModel):
         print("en sent with 'translate to English scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens_orig_en))
         for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
-            #logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
 
