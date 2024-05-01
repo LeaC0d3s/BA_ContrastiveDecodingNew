@@ -41,7 +41,7 @@ class MTTask:
         #source_sentences = load_dataset('gsarti/flores_101',self.load_converter[self.src_lang])['devtest']['sentence']
 
         # Define the path to your local text file
-        file_path = "en_selected_sents.txt" #special cases 36 samples
+        #file_path = "en_selected_sents.txt" #special cases 36 samples
         file_path = "en.txt"  # total sentences
         #file_path = "en_selected_two.txt"
         # Load the dataset from the text file
