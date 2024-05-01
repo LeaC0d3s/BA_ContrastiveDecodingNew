@@ -139,7 +139,7 @@ class LLaMaTranslationModel(TranslationModel):
                 translation = ""
             else:
                 translation = response_lines[0].strip()
-                print(translation)
+                
             translations.append(translation)
 
         return translations
@@ -312,8 +312,6 @@ class LLaMaTranslationModel(TranslationModel):
             if tok == 2:
                 break
             # Add the current token to the input IDs
-            #print(input_ids_de.shape, attention_mask_de.shape)
-            #print(input_ids_en.shape, attention_mask_en.shape)
             input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]]).to(self.model.device)], dim=1)
             input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]]).to(self.model.device)], dim=1)
 
@@ -321,9 +319,6 @@ class LLaMaTranslationModel(TranslationModel):
             # Update the attention mask to consider the new token
             attention_mask_de = torch.cat([attention_mask_de, torch.ones_like(attention_mask_de[:, :1]).to(self.model.device)], dim=1)
             attention_mask_en = torch.cat([attention_mask_en, torch.ones_like(attention_mask_en[:, :1]).to(self.model.device)], dim=1)
-            #print(input_ids_de.shape, attention_mask_de.shape)
-            #print(input_ids_en.shape, attention_mask_en.shape)
-
 
             outputs_german = self.model.generate(
                 input_ids=input_ids_de,
@@ -331,7 +326,7 @@ class LLaMaTranslationModel(TranslationModel):
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
                 #max_length=1200,
-                max_new_tokens=2,
+                max_new_tokens=1,
                 # logits_processor=logits_processor,
                 remove_invalid_values=True,
                 # Disable sampling
@@ -351,7 +346,7 @@ class LLaMaTranslationModel(TranslationModel):
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
                 #max_length=1200,
-                max_new_tokens=2,
+                max_new_tokens=1,
                 # logits_processor=logits_processor,
                 remove_invalid_values=True,
                 # Disable sampling
@@ -376,22 +371,17 @@ class LLaMaTranslationModel(TranslationModel):
             fixed_token.append(tok)
 
         #logging.info(output)
-        #--added start
-        #originall sequence with contrastive decoding.
+
+        # calculate probabilities for generated CD tokens
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
+        #calculate probabilities for generated translations (baseline German + English) tokens
         transition_scores_orig = self.model.compute_transition_scores(
             outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
-        #transition_scores_experiment = self.model.compute_transition_scores(
-            #english_translations.unsqueeze(0), english_scores, normalize_logits=True)
-
-        #logging.info(transition_scores)
-
 
         generated_tokens = outputs.sequences[0][input_length:]
         generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
         generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
-
 
         decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
         decoded_en = self.tokenizer.decode(generated_tokens_orig_en)

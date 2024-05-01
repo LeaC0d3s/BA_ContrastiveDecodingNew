@@ -127,7 +127,7 @@ class MTTask:
         else:
             raise NotImplementedError
 
-        with open(str(self.out_dir)+"/"+file_name+".txt", 'w') as f:
+        with open(str(self.out_dir)+"/"+file_name+self.language_pair+".txt", 'w') as f:
             f.write("\n".join(translations))
         if type == "contrastive":
             with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
@@ -142,8 +142,9 @@ class MTTask:
             with open(str(self.out_dir) + "/" + file_name + ".probs_en_with_fixed_incremental_cd.json", "w") as f:
                 json.dump(fixed_decoding_ids_en, f)
 
-        if not os.path.isfile(str(self.out_dir)+"/"+"ref.text"):
-            file_path = "de_selected_ref.txt"
+        if not os.path.isfile(str(self.out_dir)+"/"+"total_ref.text"):
+            file_path = "de.txt"
+            #file_path = "de_selected_ref.txt"
             #file_path = "de_selected_ref_two.txt"
             #target_sentences = load_dataset("text", data_files=file_path,cache_dir=None)["train"]["text"]
             #target_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.tgt_lang])['devtest']['sentence']
@@ -154,7 +155,7 @@ class MTTask:
             # Optionally, you can remove newline characters from each line
             target_sentences = [sentence.strip() for sentence in target_sentences]
 
-            with open(str(self.out_dir) + "/" + "ref.txt", 'w') as f:
+            with open(str(self.out_dir) + "/" + "total_ref.txt", 'w') as f:
                 f.write("\n".join(target_sentences))
 
         return Path(f.name)
