@@ -139,6 +139,7 @@ class LLaMaTranslationModel(TranslationModel):
                 translation = ""
             else:
                 translation = response_lines[0].strip()
+                print(translation)
             translations.append(translation)
 
         return translations
