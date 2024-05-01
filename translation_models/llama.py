@@ -248,6 +248,24 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
+
+        outputs_orig = self.model.generate(
+            inputs,
+            num_beams=num_beams,
+            eos_token_id=self.tokenizer.eos_token_id,
+            max_length=1200,
+            # logits_processor=logits_processor,
+            remove_invalid_values=True,
+            # Disable sampling
+            do_sample=False,
+            temperature=1.0,
+            top_p=1.0,
+            # manually added
+            return_dict_in_generate=True,
+            output_scores=True,
+            **kwargs,
+        )
+        """
         outputs_orig = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -265,6 +283,7 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
+        """
         """
         outputs_german = self.model.generate(
             input_ids=input_ids_de,
@@ -294,6 +313,8 @@ class LLaMaTranslationModel(TranslationModel):
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         first_input_id = input_ids[0]
         second_input_id = input_ids[1]
+        not_pad_input_de = inputs["input_ids"][0].shape[0]
+        not_pad_input_en = inputs["input_ids"][1].shape[0]
 
         input_length = first_input_id.shape[0]
         input_length_orig_en = second_input_id.shape[0]
@@ -326,7 +347,7 @@ class LLaMaTranslationModel(TranslationModel):
                 attention_mask=attention_mask_de,
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
-                max_length=1200,
+                #max_length=1200,
                 max_new_tokens=2,
                 # logits_processor=logits_processor,
                 remove_invalid_values=True,
@@ -346,7 +367,7 @@ class LLaMaTranslationModel(TranslationModel):
                 attention_mask=attention_mask_en,
                 num_beams=num_beams,
                 eos_token_id=self.tokenizer.eos_token_id,
-                max_length=1200,
+                #max_length=1200,
                 max_new_tokens=2,
                 # logits_processor=logits_processor,
                 remove_invalid_values=True,
@@ -386,9 +407,12 @@ class LLaMaTranslationModel(TranslationModel):
 
 
         generated_tokens = outputs.sequences[0][input_length:]
-        generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
+        #generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
+        #generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
+        generated_tokens_orig_de = outputs_orig.sequences[0][not_pad_input_de:]
+        generated_tokens_orig_en = outputs_orig.sequences[1][not_pad_input_en:]
+
         decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
-        generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
         decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
         # Loop over each time step in the generated sequence
 
