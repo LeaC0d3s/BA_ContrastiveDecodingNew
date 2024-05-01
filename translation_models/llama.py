@@ -190,7 +190,9 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info(inputs)
 
         input_ids = [x['input_ids'][0].tolist() for x in inputs]
+        no_pad_input_ids = input_ids
         attention_mask = [x['attention_mask'][0].tolist() for x in inputs]
+        no_pad_attention_mask = attention_mask
         #logging.info("Input_ids before padding", input_ids, attention_mask)
 
         pad_token_id = self.tokenizer.get_vocab()["▁"]
@@ -212,6 +214,7 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info("Input_ids after padding", input_ids, attention_mask)
         #input_enc = self.tokenizer.batch_encode_plus(inputs, return_tensor="pt", add_special_tokens=True, truncation=True, padding=self.padding)
         input_ids = torch.tensor(input_ids).to(self.model.device)
+        no_pad_input_ids = torch.tensor(no_pad_input_ids).to(self.model.device)
         #print(input_ids.shape, input_ids[0].shape)
         #input_ids_de = torch.tensor(input_ids[0].unsqueeze(0)).to(self.model.device)
         #input_ids_en = torch.tensor(input_ids[1].unsqueeze(0)).to(self.model.device)
@@ -220,6 +223,7 @@ class LLaMaTranslationModel(TranslationModel):
 
 
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
+        no_pad_attention_mask = torch.tensor(no_pad_attention_mask).to(self.model.device)
         #attention_mask_de = torch.tensor(attention_mask[0].unsqueeze(0)).to(self.model.device)
         #attention_mask_en = torch.tensor(attention_mask[1].unsqueeze(0)).to(self.model.device)
         attention_mask_de = attention_mask[0].unsqueeze(0).clone().detach().to(self.model.device)
@@ -250,7 +254,8 @@ class LLaMaTranslationModel(TranslationModel):
         )
 
         outputs_orig = self.model.generate(
-            inputs,
+            input_ids=no_pad_input_ids,
+            attention_mask=no_pad_attention_mask,
             num_beams=num_beams,
             eos_token_id=self.tokenizer.eos_token_id,
             max_length=1200,
@@ -318,7 +323,7 @@ class LLaMaTranslationModel(TranslationModel):
         print(not_pad_input_de,not_pad_input_en)
 
         input_length = first_input_id.shape[0]
-        input_length_orig_en = second_input_id.shape[0]
+        #input_length_orig_en = second_input_id.shape[0]
 
         cd_tokens = outputs.sequences[0][input_length:]
         fixed_decoding_de = []
