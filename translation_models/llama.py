@@ -318,9 +318,9 @@ class LLaMaTranslationModel(TranslationModel):
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         first_input_id = input_ids[0]
         second_input_id = input_ids[1]
-        not_pad_input_de = len(inputs["input_ids"][0])
-        not_pad_input_en = len(inputs["input_ids"][1])
-        print(not_pad_input_de,not_pad_input_en)
+        not_pad_input_de = len(no_pad_input_ids[0])
+        not_pad_input_en = len(no_pad_input_ids[1])
+        print(not_pad_input_de, not_pad_input_en)
 
         input_length = first_input_id.shape[0]
         #input_length_orig_en = second_input_id.shape[0]
