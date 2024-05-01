@@ -42,6 +42,7 @@ class MTTask:
 
         # Define the path to your local text file
         file_path = "en_selected_sents.txt" #special cases 36 samples
+        file_path = "en.txt"  # total sentences
         #file_path = "en_selected_two.txt"
         # Load the dataset from the text file
         #source_sentences = load_dataset("text", data_files=file_path)["train"]["text"]
