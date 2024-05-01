@@ -212,6 +212,7 @@ class LLaMaTranslationModel(TranslationModel):
         #logging.info("Input_ids after padding", input_ids, attention_mask)
         #input_enc = self.tokenizer.batch_encode_plus(inputs, return_tensor="pt", add_special_tokens=True, truncation=True, padding=self.padding)
         input_ids = torch.tensor(input_ids).to(self.model.device)
+
         #print(input_ids.shape, input_ids[0].shape)
         #input_ids_de = torch.tensor(input_ids[0].unsqueeze(0)).to(self.model.device)
         #input_ids_en = torch.tensor(input_ids[1].unsqueeze(0)).to(self.model.device)
@@ -249,39 +250,6 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
 
-        outputs_orig_de = self.pipeline.forward(
-            inputs[0],
-            num_beams=num_beams,
-            eos_token_id=self.tokenizer.eos_token_id,
-            max_length=1200,
-            # logits_processor=logits_processor,
-            remove_invalid_values=True,
-            # Disable sampling
-            do_sample=False,
-            temperature=1.0,
-            top_p=1.0,
-            # manually added
-            return_dict_in_generate=True,
-            output_scores=True,
-            **kwargs,
-        )
-        outputs_orig_en = self.pipeline.forward(
-            inputs[1],
-            num_beams=num_beams,
-            eos_token_id=self.tokenizer.eos_token_id,
-            max_length=1200,
-            # logits_processor=logits_processor,
-            remove_invalid_values=True,
-            # Disable sampling
-            do_sample=False,
-            temperature=1.0,
-            top_p=1.0,
-            # manually added
-            return_dict_in_generate=True,
-            output_scores=True,
-            **kwargs,
-        )
-        """
         outputs_orig = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -299,7 +267,7 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
-        """
+
         """
         outputs_german = self.model.generate(
             input_ids=input_ids_de,
@@ -328,14 +296,10 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         first_input_id = input_ids[0]
-        #second_input_id = input_ids[1]
-
-        print(outputs_orig_de, outputs_orig_en)
-
-
+        second_input_id = input_ids[1]
 
         input_length = first_input_id.shape[0]
-        #input_length_orig_en = second_input_id.shape[0]
+        input_length_orig_en = second_input_id.shape[0]
 
         cd_tokens = outputs.sequences[0][input_length:]
         fixed_decoding_de = []
@@ -415,20 +379,18 @@ class LLaMaTranslationModel(TranslationModel):
         #originall sequence with contrastive decoding.
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
-        transition_scores_orig_de = self.model.compute_transition_scores(
-            outputs_orig_de.sequences, outputs_orig_de.scores, normalize_logits=True)
-        transition_scores_orig_en = self.model.compute_transition_scores(
-            outputs_orig_en.sequences, outputs_orig_en.scores, normalize_logits=True)
-
+        transition_scores_orig = self.model.compute_transition_scores(
+            outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
+        #transition_scores_experiment = self.model.compute_transition_scores(
+            #english_translations.unsqueeze(0), english_scores, normalize_logits=True)
 
         #logging.info(transition_scores)
 
 
         generated_tokens = outputs.sequences[0][input_length:]
-        #generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
-        #generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
-        generated_tokens_orig_de = outputs_orig_de.sequences[0][len(inputs[0]):]
-        generated_tokens_orig_en = outputs_orig_en.sequences[0][len(inputs[1]):]
+        generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
+        generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
+
 
         decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
         decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
@@ -490,7 +452,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         print("en sent with 'translate to German scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
-        for tok, score in zip(generated_tokens_orig_de, transition_scores_orig_de[0]):
+        for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
@@ -498,7 +460,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         print("en sent with 'translate to English scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens_orig_en))
-        for tok, score in zip(generated_tokens_orig_en, transition_scores_orig_en[0]):
+        for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
 
