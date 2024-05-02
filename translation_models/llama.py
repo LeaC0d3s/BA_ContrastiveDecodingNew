@@ -250,7 +250,7 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
-
+        """
         outputs_orig = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -269,7 +269,7 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
 
-        """
+        
         outputs_german = self.model.generate(
             input_ids=input_ids_de,
             attention_mask=attention_mask_de,
@@ -297,10 +297,10 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         first_input_id = input_ids[0]
-        second_input_id = input_ids[1]
+        #second_input_id = input_ids[1]
 
         input_length = first_input_id.shape[0]
-        input_length_orig_en = second_input_id.shape[0]
+        #input_length_orig_en = second_input_id.shape[0]
 
         cd_tokens = outputs.sequences[0][input_length:]
         fixed_decoding_de = []
@@ -376,15 +376,15 @@ class LLaMaTranslationModel(TranslationModel):
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
         #calculate probabilities for generated translations (baseline German + English) tokens
-        transition_scores_orig = self.model.compute_transition_scores(
-            outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
+        #transition_scores_orig = self.model.compute_transition_scores(
+        #    outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
 
         generated_tokens = outputs.sequences[0][input_length:]
-        generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
-        generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
+        #generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
+        #generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
 
-        decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
-        decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
+        #decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
+        #decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
         # Loop over each time step in the generated sequence
 
         #print(outputs.sequences[0][input_length:])
@@ -396,9 +396,9 @@ class LLaMaTranslationModel(TranslationModel):
 
         # Initialize an empty list to store tuple
         # s
-        save_origin_probs_de = []
-        save_origin_probs_en = []
-        save_origin_translation = [str(decoded_de), str(decoded_en)]
+        #save_origin_probs_de = []
+        #save_origin_probs_en = []
+        #save_origin_translation = [str(decoded_de), str(decoded_en)]
         save_probs = []
         save_all_fixed_encoding_en = []
         save_all_fixed_encoding_de = []
@@ -441,6 +441,7 @@ class LLaMaTranslationModel(TranslationModel):
 
 
 
+        """
         print("en sent with 'translate to German scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens_orig_de))
         for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
@@ -454,6 +455,7 @@ class LLaMaTranslationModel(TranslationModel):
         for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
             save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
+        """
 
 
 
@@ -482,7 +484,9 @@ class LLaMaTranslationModel(TranslationModel):
         else:
             translation = response_lines[0].strip()
 
-        return translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en, save_all_fixed_encoding_de, save_all_fixed_encoding_en
+        #return translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en, save_all_fixed_encoding_de, save_all_fixed_encoding_en
+        return translation, save_probs, save_all_fixed_encoding_de, save_all_fixed_encoding_en
+
 
 
 class PromptTemplate:

@@ -99,21 +99,28 @@ class MTTask:
 
             translations = []
             translations_probs = {}
-            origin_translation_probs_de = {}
-            origin_translation_probs_en = {}
+            #origin_translation_probs_de = {}
+            #origin_translation_probs_en = {}
             fixed_decoding_ids_de = {}
             fixed_decoding_ids_en = {}
             for idx, pair in enumerate(tqdm(list(zip(*multi_source_sentences)))):
+                """
                 translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en, save_all_enc_de, save_all_enc_en = translation_method(
                     src_langs=src_langs,
                     tgt_langs=tgt_langs,
                     src_weights=src_weights,
                     multi_source_sentences=pair,
-                    )
+                    )"""
+                translation, save_probs, save_all_enc_de, save_all_enc_en = translation_method(
+                    src_langs=src_langs,
+                    tgt_langs=tgt_langs,
+                    src_weights=src_weights,
+                    multi_source_sentences=pair,
+                )
                 translations.append(translation)
                 translations_probs[idx] = (translation, save_probs)
-                origin_translation_probs_de[idx] = (save_origin_translation[0], save_origin_probs_de)
-                origin_translation_probs_en[idx] = (save_origin_translation[1], save_origin_probs_en)
+                #origin_translation_probs_de[idx] = (save_origin_translation[0], save_origin_probs_de)
+                #origin_translation_probs_en[idx] = (save_origin_translation[1], save_origin_probs_en)
                 fixed_decoding_ids_de[idx] = (translation, save_all_enc_de)
                 fixed_decoding_ids_en[idx] = (translation, save_all_enc_en)
         else:
@@ -134,10 +141,11 @@ class MTTask:
             with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
                 json.dump(translations_probs, f)
 
-            with open(str(self.out_dir)+"/"+file_name+".probs_orig_de.json", 'w') as f:
-                json.dump(origin_translation_probs_de, f)
-            with open(str(self.out_dir)+"/"+file_name+".probs_orig_en.json", 'w') as f:
-                json.dump(origin_translation_probs_en, f)
+            #with open(str(self.out_dir)+"/"+file_name+".probs_orig_de.json", 'w') as f:
+                #json.dump(origin_translation_probs_de, f)
+            #with open(str(self.out_dir)+"/"+file_name+".probs_orig_en.json", 'w') as f:
+                #json.dump(origin_translation_probs_en, f)
+
             with open(str(self.out_dir)+"/"+file_name+".probs_de_with_fixed_incremental_cd.json", "w")as f:
                 json.dump(fixed_decoding_ids_de, f)
             with open(str(self.out_dir) + "/" + file_name + ".probs_en_with_fixed_incremental_cd.json", "w") as f:
