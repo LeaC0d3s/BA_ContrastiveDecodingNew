@@ -50,6 +50,5 @@ for token in key_2_list_de:
 print("Translate to English: ", key_2_sent_en)
 for token in key_2_list_en:
     print(f"| {token[0]:5d}| {token[1]:9s} | {token[2]:.4f} | {token[3]} |")
-![](../Desktop/Output_Probabilities_for_CD_0.9_with_en_de.png)
 
 

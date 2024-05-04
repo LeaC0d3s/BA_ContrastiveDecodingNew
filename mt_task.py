@@ -135,7 +135,7 @@ class MTTask:
         else:
             raise NotImplementedError
 
-        with open(str(self.out_dir)+"/"+file_name+self.language_pair+".txt", 'w') as f:
+        with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".txt", 'w') as f:
             f.write("\n".join(translations))
         if type == "contrastive":
             with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
