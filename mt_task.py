@@ -38,9 +38,9 @@ class MTTask:
     def evaluate(self, translation_method: callable, type='direct', source_contrastive=1, source_weight=None, language_contrastive=None, language_weight=None) -> Path:
 
         ## load FLORES dataset
-        #source_sentences = load_dataset('gsarti/flores_101',self.load_converter[self.src_lang])['devtest']['sentence']
+        source_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.src_lang])['devtest']['sentence']
 
-        # Define the path to your local text file
+        """# Define the path to your local text file
         #file_path = "en_selected_sents.txt" #special cases 36 samples
         file_path = "en.txt"  # total sentences
         #file_path = "en_selected_two.txt"
@@ -54,6 +54,7 @@ class MTTask:
 
         # Optionally, you can remove newline characters from each line
         source_sentences = [sentence.strip() for sentence in source_sentences]
+        """
 
 
 
@@ -127,7 +128,7 @@ class MTTask:
             raise NotImplementedError
 
         if type == 'direct':
-            file_name = 'direct'
+            file_name = 'direct-control'
         elif type == 'contrastive':
             file_name = 'contrastive-{0}-{1}'.format(source_contrastive, source_weight)
             if language_contrastive:
@@ -151,20 +152,22 @@ class MTTask:
             with open(str(self.out_dir) + "/" + file_name + ".probs_en_with_fixed_incremental_cd.json", "w") as f:
                 json.dump(fixed_decoding_ids_en, f)
 
-        if not os.path.isfile(str(self.out_dir)+"/"+"total_ref.text"):
+        if not os.path.isfile(str(self.out_dir)+"/"+"all_ref.text"):
             file_path = "de.txt"
             #file_path = "de_selected_ref.txt"
             #file_path = "de_selected_ref_two.txt"
             #target_sentences = load_dataset("text", data_files=file_path,cache_dir=None)["train"]["text"]
-            #target_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.tgt_lang])['devtest']['sentence']
-            with open(file_path, "r", encoding="utf-8") as file:
+            target_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.tgt_lang])['devtest']['sentence']
+
+            #with open(file_path, "r", encoding="utf-8") as file:
                 # Read all lines from the file
-                target_sentences = file.readlines()
+                #target_sentences = file.readlines()
 
             # Optionally, you can remove newline characters from each line
-            target_sentences = [sentence.strip() for sentence in target_sentences]
+            #target_sentences = [sentence.strip() for sentence in target_sentences]
 
-            with open(str(self.out_dir) + "/" + "total_ref.txt", 'w') as f:
+
+            with open(str(self.out_dir) + "/" + "all_ref.txt", 'w') as f:
                 f.write("\n".join(target_sentences))
 
         return Path(f.name)

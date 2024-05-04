@@ -210,28 +210,18 @@ class LLaMaTranslationModel(TranslationModel):
                                      [0] * (max_len - len(attention_mask[i])) +
                                      attention_mask[i][second_inst_idx + 1:])
 
-        #logging.info("Input_ids after padding", input_ids, attention_mask)
-        #input_enc = self.tokenizer.batch_encode_plus(inputs, return_tensor="pt", add_special_tokens=True, truncation=True, padding=self.padding)
         input_ids = torch.tensor(input_ids).to(self.model.device)
-
-        #print(input_ids.shape, input_ids[0].shape)
-        #input_ids_de = torch.tensor(input_ids[0].unsqueeze(0)).to(self.model.device)
-        #input_ids_en = torch.tensor(input_ids[1].unsqueeze(0)).to(self.model.device)
         input_ids_de = input_ids[0].unsqueeze(0).clone().detach().to(self.model.device)
         input_ids_en = input_ids[1].unsqueeze(0).clone().detach().to(self.model.device)
 
 
         attention_mask = torch.tensor(attention_mask).to(self.model.device)
-        #attention_mask_de = torch.tensor(attention_mask[0].unsqueeze(0)).to(self.model.device)
-        #attention_mask_en = torch.tensor(attention_mask[1].unsqueeze(0)).to(self.model.device)
         attention_mask_de = attention_mask[0].unsqueeze(0).clone().detach().to(self.model.device)
         attention_mask_en = attention_mask[1].unsqueeze(0).clone().detach().to(self.model.device)
-
 
         logits_processor = LogitsProcessorList([
             EnsembleLogitsProcessor(num_beams=num_beams, source_weights=src_weights),
         ])
-        #print(logits_processor)
 
         outputs = self.model.generate(
             input_ids=input_ids,
@@ -245,7 +235,6 @@ class LLaMaTranslationModel(TranslationModel):
             do_sample=False,
             temperature=1.0,
             top_p=1.0,
-            #manually added
             return_dict_in_generate=True,
             output_scores=True,
             **kwargs,
@@ -290,11 +279,6 @@ class LLaMaTranslationModel(TranslationModel):
         )
         """
 
-
-
-        #logging.info(outputs)
-        #logging.info(outputs_orig)
-
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
         first_input_id = input_ids[0]
         #second_input_id = input_ids[1]
@@ -327,7 +311,6 @@ class LLaMaTranslationModel(TranslationModel):
                 eos_token_id=self.tokenizer.eos_token_id,
                 #max_length=1200,
                 max_new_tokens=1,
-                # logits_processor=logits_processor,
                 remove_invalid_values=True,
                 # Disable sampling
                 do_sample=False,
@@ -347,7 +330,6 @@ class LLaMaTranslationModel(TranslationModel):
                 eos_token_id=self.tokenizer.eos_token_id,
                 #max_length=1200,
                 max_new_tokens=1,
-                # logits_processor=logits_processor,
                 remove_invalid_values=True,
                 # Disable sampling
                 do_sample=False,
@@ -390,12 +372,7 @@ class LLaMaTranslationModel(TranslationModel):
         #print(outputs.sequences[0][input_length:])
         #cd_tokens = outputs.sequences[0][input_length:]
 
-
-
-
-
         # Initialize an empty list to store tuple
-        # s
         #save_origin_probs_de = []
         #save_origin_probs_en = []
         #save_origin_translation = [str(decoded_de), str(decoded_en)]
