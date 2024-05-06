@@ -125,8 +125,10 @@ class LLaMaTranslationModel(TranslationModel):
                 do_sample=False,
                 temperature=1.0,
                 top_p=1.0,
+                output_scores=True,
             )
             output = self.pipeline.postprocess(output)
+            print(output)
             output = output[0]['generated_text']
             logging.info(output)
             prompt_template.add_model_reply(output, includes_history=True)
