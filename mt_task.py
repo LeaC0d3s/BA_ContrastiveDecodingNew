@@ -56,11 +56,12 @@ class MTTask:
         source_sentences = [sentence.strip() for sentence in source_sentences]
 
         if type == 'direct':
-            translations = translation_method(
+            translations, save_probs = translation_method(
             src_lang=self.src_lang,
             tgt_lang=self.tgt_lang,
             source_sentences=source_sentences,
             )
+
         elif type == 'contrastive':
             multi_source_sentences = [source_sentences]
             src_weights = [1]
@@ -134,6 +135,9 @@ class MTTask:
 
         with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".txt", 'w') as f:
             f.write("\n".join(translations))
+
+        with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".json", 'w') as f:
+            json.dump(save_probs, f)
         if type == "contrastive":
             with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
                 json.dump(translations_probs, f)

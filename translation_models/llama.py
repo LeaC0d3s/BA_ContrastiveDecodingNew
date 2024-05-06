@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from typing import Set, List, Union, Tuple, Optional
+from typing import Set, List, Union, Tuple, Optional, Dict
 
 import torch
 from tqdm import tqdm
@@ -74,7 +74,7 @@ class LLaMaTranslationModel(TranslationModel):
                    batch_size: int = 1,
                    num_beams: int = 1,
                    **kwargs,
-                   ) -> Union[List[str], List[Tuple[str, float]]]:
+                   ) -> Union[List[str], List[Tuple[str, float]], Tuple[List[str], Dict[int, Tuple[str, List[Tuple[int, str, float, str]]]]]]:
         if return_score:
             raise NotImplementedError
         if batch_size != 1:
@@ -103,7 +103,8 @@ class LLaMaTranslationModel(TranslationModel):
             )
 
         translations = []
-        for source_sentence in tqdm(source_sentences):
+        save_probs = {}
+        for idx, source_sentence in enumerate(tqdm(source_sentences)):
             prompt_template = PromptTemplate(system_prompt=system_prompt)
             message = self.message_template.format(
                 src_lang=self._lang_code_to_name(self.src_lang),
@@ -118,8 +119,8 @@ class LLaMaTranslationModel(TranslationModel):
 
             print(inputs["input_ids"], inputs["attention_mask"])
             output = self.model.generate(
-                input_ids=inputs["input_ids"],
-                attention_mask=inputs["attention_mask"],
+                input_ids=inputs["input_ids"].to(self.model.device),
+                attention_mask=inputs["attention_mask"].to(self.model.device),
                 eos_token_id=self.tokenizer.eos_token_id,
                 max_length=1200,  # Max ref length across Flores-101 is 960
                 remove_invalid_values=True,
@@ -144,12 +145,33 @@ class LLaMaTranslationModel(TranslationModel):
                 top_p=1.0,
             )
             """
-            print("this is the output: ", output)
-            output = self.pipeline.postprocess(output)
-            print("This is the postprocessed output:", output)
-            output = output[0]['generated_text']
-            logging.info(output)
-            prompt_template.add_model_reply(output, includes_history=True)
+            transition_scores = self.model.compute_transition_scores(
+                output.sequences, output.scores, normalize_logits=True)
+
+            output = self.pipeline._ensure_tensor_on_device(output, device=torch.device("cpu"))
+            decoded_output = self.pipeline.postprocess(output.sequences)
+            print("This is the postprocessed output:", decoded_output)
+            output_dic = {
+                "generated_sequence": decoded_output,
+                "tokenized_sequence": output.sequences,
+                "input_ids": inputs["input_ids"],
+                "prompt_text": prompt,
+            }
+            generated_tokens = output.sequences[0][len(output_dic["input_ids"][0]):]
+            print(f"{self.src_lang} sent with 'translate to {self.tgt_lang}; scores'...: ")
+            logging.info(self.tokenizer.decode(generated_tokens))
+            save_prob = []
+            for tok, score in zip(generated_tokens, transition_scores[0]):
+                logging.info(
+                    f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+
+                save_prob.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
+                                   float(np.round(score.cpu().numpy(), decimals=4)),
+                                   f"{np.exp(score.cpu().numpy()):.2%}"))
+
+            gen_seq = output_dic['generated_sequence']
+            logging.info(gen_seq)
+            prompt_template.add_model_reply(gen_seq, includes_history=True)
             response = prompt_template.get_model_replies(strip=True)[0]
             response_lines = response.replace("Sure, here's the translation:", "").strip().split("\n")
             if not response_lines:
@@ -158,8 +180,9 @@ class LLaMaTranslationModel(TranslationModel):
                 translation = response_lines[0].strip()
                 
             translations.append(translation)
+            save_probs[idx] = (translation, save_prob)
 
-        return translations
+        return translations, save_probs
 
     def _translate_multi_source(self,
                                 multi_source_sentences: List[str],
