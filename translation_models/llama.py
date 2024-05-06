@@ -115,6 +115,7 @@ class LLaMaTranslationModel(TranslationModel):
             prompt = prompt_template.build_prompt()
             prompt += "Sure, here's the translation:\n"
             inputs = self.pipeline.preprocess(prompt)
+            print(inputs)
             output = self.pipeline.forward(
                 inputs,
                 eos_token_id=self.tokenizer.eos_token_id,
