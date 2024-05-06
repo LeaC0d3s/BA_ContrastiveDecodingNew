@@ -147,17 +147,20 @@ class LLaMaTranslationModel(TranslationModel):
             """
             transition_scores = self.model.compute_transition_scores(
                 output.sequences, output.scores, normalize_logits=True)
+            output_rsh = output.sequences.reshape(1, output.sequences.shape[0], *output.sequences.shape[1:])
 
-            output = self.pipeline._ensure_tensor_on_device(output, device=torch.device("cpu"))
-            decoded_output = self.pipeline.postprocess(output.sequences)
-            print("This is the postprocessed output:", decoded_output)
-            output_dic = {
-                "generated_sequence": decoded_output,
-                "tokenized_sequence": output.sequences,
+            output_rsh = {
+                "generated_sequence": output_rsh,
+                "tokenized_sequence": output.sequences[0],
                 "input_ids": inputs["input_ids"],
                 "prompt_text": prompt,
             }
-            generated_tokens = output.sequences[0][len(output_dic["input_ids"][0]):]
+            print(output_rsh)
+            output_rsh = self.pipeline._ensure_tensor_on_device(output_rsh, device=torch.device("cpu"))
+            decoded_output = self.pipeline.postprocess(output_rsh)
+            print("This is the postprocessed output:", decoded_output)
+
+            generated_tokens = output_rsh["tokenized_sequence"][len(output_rsh["input_ids"][0]):]
             print(f"{self.src_lang} sent with 'translate to {self.tgt_lang}; scores'...: ")
             logging.info(self.tokenizer.decode(generated_tokens))
             save_prob = []
@@ -169,7 +172,7 @@ class LLaMaTranslationModel(TranslationModel):
                                    float(np.round(score.cpu().numpy(), decimals=4)),
                                    f"{np.exp(score.cpu().numpy()):.2%}"))
 
-            gen_seq = output_dic['generated_sequence']
+            gen_seq = output_rsh['generated_sequence']
             logging.info(gen_seq)
             prompt_template.add_model_reply(gen_seq, includes_history=True)
             response = prompt_template.get_model_replies(strip=True)[0]
