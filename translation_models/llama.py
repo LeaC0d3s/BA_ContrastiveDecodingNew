@@ -127,8 +127,9 @@ class LLaMaTranslationModel(TranslationModel):
                 top_p=1.0,
                 output_scores=True,
             )
+            print("this is the output: ", output)
             output = self.pipeline.postprocess(output)
-            print(output)
+            print("This is the postprocessed output:", output)
             output = output[0]['generated_text']
             logging.info(output)
             prompt_template.add_model_reply(output, includes_history=True)
