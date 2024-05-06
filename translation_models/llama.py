@@ -125,6 +125,7 @@ class LLaMaTranslationModel(TranslationModel):
                 do_sample=False,
                 temperature=1.0,
                 top_p=1.0,
+                return_dict_in_generate=True,
                 output_scores=True,
             )
             print("this is the output: ", output)
