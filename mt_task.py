@@ -124,11 +124,11 @@ class MTTask:
             raise NotImplementedError
 
         if type == 'direct':
-            file_name = 'direct-control'
+            file_name = 'direct-control-NT'
         elif type == 'contrastive':
             file_name = 'contrastive-{0}-{1}'.format(source_contrastive, source_weight)
             if language_contrastive:
-                file_name += "-V2-lang-{0}-{1}".format('+'.join(language_contrastive), language_weight)
+                file_name += "-NT-lang-{0}-{1}".format('+'.join(language_contrastive), language_weight)
         else:
             raise NotImplementedError
 
