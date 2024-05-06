@@ -115,9 +115,15 @@ class LLaMaTranslationModel(TranslationModel):
             prompt = prompt_template.build_prompt()
             prompt += "Sure, here's the translation:\n"
             inputs = self.pipeline.preprocess(prompt)
-            print(inputs)
+            input_ids = [x['input_ids'][0].tolist() for x in inputs]
+            attention_mask = [x['attention_mask'][0].tolist() for x in inputs]
+            input_ids = torch.tensor(input_ids).to(self.model.device)
+            attention_mask = torch.tensor(attention_mask).to(self.model.device)
+
+            print(input_ids, attention_mask)
             output = self.model.generate(
-                inputs,
+                input_ids=input_ids,
+                attention_mask=attention_mask,
                 eos_token_id=self.tokenizer.eos_token_id,
                 max_length=1200,  # Max ref length across Flores-101 is 960
                 remove_invalid_values=True,
