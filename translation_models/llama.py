@@ -116,7 +116,7 @@ class LLaMaTranslationModel(TranslationModel):
             prompt += "Sure, here's the translation:\n"
             inputs = self.pipeline.preprocess(prompt)
             print(inputs)
-            output = self.pipeline.forward(
+            output = self.model.generate(
                 inputs,
                 eos_token_id=self.tokenizer.eos_token_id,
                 max_length=1200,  # Max ref length across Flores-101 is 960
@@ -129,6 +129,19 @@ class LLaMaTranslationModel(TranslationModel):
                 return_dict_in_generate=True,
                 output_scores=True,
             )
+            """#This is the original forward pass, no scores possible
+            output = self.pipeline.forward(
+                inputs,
+                eos_token_id=self.tokenizer.eos_token_id,
+                max_length=1200,  # Max ref length across Flores-101 is 960
+                remove_invalid_values=True,
+                num_beams=num_beams,
+                # Disable sampling
+                do_sample=False,
+                temperature=1.0,
+                top_p=1.0,
+            )
+            """
             print("this is the output: ", output)
             output = self.pipeline.postprocess(output)
             print("This is the postprocessed output:", output)
