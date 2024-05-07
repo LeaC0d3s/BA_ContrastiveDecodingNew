@@ -157,7 +157,7 @@ class LLaMaTranslationModel(TranslationModel):
             }
             print(output_rsh)
             output_rsh = self.pipeline._ensure_tensor_on_device(output_rsh, device=torch.device("cpu"))
-            decoded_output = self.pipeline.postprocess(output_rsh) #retuns a dictionary with "generated_text" key (decoded)
+            decoded_output = self.pipeline.postprocess(output_rsh) #retuns a list with a dictionary with "generated_text" key (decoded)
             print("This is the postprocessed output:", decoded_output)
 
             generated_tokens = output_rsh["tokenized_sequence"][len(output_rsh["input_ids"][0]):]
@@ -172,7 +172,7 @@ class LLaMaTranslationModel(TranslationModel):
                                    float(np.round(score.cpu().numpy(), decimals=4)),
                                    f"{np.exp(score.cpu().numpy()):.2%}"))
 
-            gen_seq = decoded_output['generated_text']
+            gen_seq = decoded_output[0]['generated_text']
             logging.info(gen_seq)
             prompt_template.add_model_reply(gen_seq, includes_history=True)
             response = prompt_template.get_model_replies(strip=True)[0]
