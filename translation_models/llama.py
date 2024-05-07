@@ -117,7 +117,7 @@ class LLaMaTranslationModel(TranslationModel):
             prompt += "Sure, here's the translation:\n"
             inputs = self.pipeline.preprocess(prompt)
 
-            print(inputs["input_ids"], inputs["attention_mask"])
+            #print(inputs["input_ids"], inputs["attention_mask"])
             output = self.model.generate(
                 input_ids=inputs["input_ids"].to(self.model.device),
                 attention_mask=inputs["attention_mask"].to(self.model.device),
@@ -132,19 +132,7 @@ class LLaMaTranslationModel(TranslationModel):
                 return_dict_in_generate=True,
                 output_scores=True,
             )
-            """#This is the original forward pass, no scores possible
-            output = self.pipeline.forward(
-                inputs,
-                eos_token_id=self.tokenizer.eos_token_id,
-                max_length=1200,  # Max ref length across Flores-101 is 960
-                remove_invalid_values=True,
-                num_beams=num_beams,
-                # Disable sampling
-                do_sample=False,
-                temperature=1.0,
-                top_p=1.0,
-            )
-            """
+
             transition_scores = self.model.compute_transition_scores(
                 output.sequences, output.scores, normalize_logits=True)
             output_rsh = output.sequences.reshape(1, output.sequences.shape[0], *output.sequences.shape[1:])
@@ -155,10 +143,10 @@ class LLaMaTranslationModel(TranslationModel):
                 "input_ids": inputs["input_ids"],
                 "prompt_text": prompt,
             }
-            print(output_rsh)
+            #print(output_rsh)
             output_rsh = self.pipeline._ensure_tensor_on_device(output_rsh, device=torch.device("cpu"))
             decoded_output = self.pipeline.postprocess(output_rsh) #retuns a list with a dictionary with "generated_text" key (decoded)
-            print("This is the postprocessed output:", decoded_output)
+            #print("This is the postprocessed output:", decoded_output)
 
             generated_tokens = output_rsh["tokenized_sequence"][len(output_rsh["input_ids"][0]):]
             print(f"{self.src_lang} sent with 'translate to {self.tgt_lang}; scores'...: ")
@@ -173,7 +161,7 @@ class LLaMaTranslationModel(TranslationModel):
                                    f"{np.exp(score.cpu().numpy()):.2%}"))
 
             gen_seq = decoded_output[0]['generated_text']
-            logging.info(gen_seq)
+            #logging.info(gen_seq)
             prompt_template.add_model_reply(gen_seq, includes_history=True)
             response = prompt_template.get_model_replies(strip=True)[0]
             response_lines = response.replace("Sure, here's the translation:", "").strip().split("\n")
