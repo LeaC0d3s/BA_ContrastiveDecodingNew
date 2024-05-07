@@ -45,14 +45,14 @@ class TranslationModel:
                 warnings.warn(f"NMT model {self} requires the src language. Assuming 'en'; override with `src_lang`")
                 src_lang = "en"
             self._set_src_lang(src_lang)
-        translations_list = self._translate(source_sentences_list, return_score, batch_size, num_beams=num_beams, **kwargs)
+        translations_list, save_probs = self._translate(source_sentences_list, return_score, batch_size, num_beams=num_beams, **kwargs)
         assert len(translations_list) == len(source_sentences_list)
 
         if isinstance(source_sentences, str):
             translations = translations_list[0]
         else:
             translations = translations_list
-        return translations
+        return translations, save_probs
 
     def _translate_multi_source(self,
                                 multi_source_sentences: List[str],
