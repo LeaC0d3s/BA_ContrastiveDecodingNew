@@ -175,7 +175,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         return translations, save_probs
 
-    def generate_step_by_step(self, input_ids, attention_mask, num_beams):
+    def generate_step_by_step(self, input_ids, attention_mask, num_beams, **kwargs):
         output = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -295,7 +295,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
 
-        greedy_score = outputs.scores[0]
+        greedy_score = outputs.scores[0][0]
         print(type(greedy_score), greedy_score.shape, greedy_score.topk(5, dim=1))
         # greedy_top_tokens = self.tokenizer.batch_decode(greedy_score.topk(5, dim=1).indices)[0].split()
         # for token in greedy_top_tokens:
@@ -362,13 +362,13 @@ class LLaMaTranslationModel(TranslationModel):
                 **kwargs,
             )
             """
-            outputs_german = self.generate_step_by_step(input_ids_de, attention_mask_de, num_beams)
+            outputs_german = self.generate_step_by_step(input_ids_de, attention_mask_de, num_beams, **kwargs)
             fixed_decoding_de.append(outputs_german.sequences[0][input_ids_de.shape[1]:])
             fixed_decoding_de_trans.append(self.model.compute_transition_scores(outputs_german.sequences,
                                                                                  outputs_german.scores,
                                                                                  normalize_logits=True))
 
-            outputs_english = self.generate_step_by_step(input_ids_en, attention_mask_en, num_beams)
+            outputs_english = self.generate_step_by_step(input_ids_en, attention_mask_en, num_beams,**kwargs)
             fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[1]:])
             fixed_decoding_en_trans.append(
                 self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
