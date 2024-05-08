@@ -299,10 +299,14 @@ class LLaMaTranslationModel(TranslationModel):
         print(type(greedy_score), greedy_score.shape, len(outputs.scores), type(outputs.scores))
         print(greedy_score.topk(3, dim=1))
         for greedy_score in outputs.scores:
+            normalized = torch.nn.functional.softmax(greedy_score, dim=1)
+            normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
+            print(normalized.topk(3, dim=1))
             greedy_top_tokens = greedy_score.topk(3, dim=1).indices[0]
             print("new token probs:")
+            print("normalized_top_tokens: ", normalized_top_tokens)
             for tok in greedy_top_tokens:
-                print(tok, self.tokenizer.decode(tok))
+                print(tok.cpu(), self.tokenizer.decode(tok.cpu()))
 
         first_input_id = input_ids[0]
         #second_input_id = input_ids[1]
