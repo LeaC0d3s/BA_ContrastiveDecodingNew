@@ -299,7 +299,7 @@ class LLaMaTranslationModel(TranslationModel):
         print(type(greedy_score), greedy_score.shape, len(outputs.scores), type(outputs.scores))
         print(greedy_score.topk(3, dim=1))
         for greedy_score in outputs.scores:
-            greedy_top_tokens = self.tokenizer.batch_decode(greedy_score.topk(3, dim=1).indices)[0].split()
+            greedy_top_tokens = self.tokenizer.decode(greedy_score.topk(3, dim=1).indices)[0].split()
             for tok in greedy_top_tokens:
                 print(tok)
 
