@@ -305,8 +305,8 @@ class LLaMaTranslationModel(TranslationModel):
             #print(normalized.topk(3, dim=1))
             greedy_top_tokens = greedy_score.topk(3, dim=1).indices[0]
             print("new token probs:")
-            for tok, score in zip(normalized_top_tokens, normalized_top_values):
-                print(tok.cpu(), self.tokenizer.decode(tok.cpu()), normalized_top_values.cpu())
+            for tok, probs in zip(normalized_top_tokens, normalized_top_values):
+                print(tok.cpu(), self.tokenizer.decode(tok.cpu()), f"{probs.cpu():.2%}")
 
         first_input_id = input_ids[0]
         #second_input_id = input_ids[1]
