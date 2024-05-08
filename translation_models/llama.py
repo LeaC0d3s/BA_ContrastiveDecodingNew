@@ -429,7 +429,7 @@ class LLaMaTranslationModel(TranslationModel):
             normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
             normalized_top_values = normalized.topk(3, dim=1).values[0]
             # print(normalized.topk(3, dim=1))
-            print("new token probs:")
+            #print("new token probs:")
             top_2_tok = normalized_top_tokens[1]
             top_3_tok = normalized_top_tokens[2]
             top_2_val = normalized_top_values[1]
@@ -448,12 +448,12 @@ class LLaMaTranslationModel(TranslationModel):
             print("fixed up to here: ", int(fixed_token[idx].cpu()))
             #print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
             save_fixed_encoding_en = []
-            for tok, score, runner_u in zip(enc, fixed_decoding_en_trans[idx][0], runner_ups_en[idx]):
+            for tok, score in zip(enc, fixed_decoding_en_trans[idx][0]):
                 logging.info(
-                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_u}")
+                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_ups_en[idx]}")
                 save_fixed_encoding_en.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
                                    float(np.round(score.cpu().numpy(), decimals=4)),
-                                   f"{np.exp(score.cpu().numpy()):.2%}", runner_u))
+                                   f"{np.exp(score.cpu().numpy()):.2%}", runner_ups_en[idx]))
             save_all_fixed_encoding_en.append([int(fixed_token[idx].cpu()), save_fixed_encoding_en])
 
         print("CD base input incrementally increased (Translate to German): ")
@@ -461,12 +461,12 @@ class LLaMaTranslationModel(TranslationModel):
             print("fixed up to here: ", int(fixed_token[idx].cpu()))
             # print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
             save_fixed_encoding_de = []
-            for tok, score, runner_u in zip(enc, fixed_decoding_de_trans[idx][0], runner_ups_de[idx]):
+            for tok, score in zip(enc, fixed_decoding_de_trans[idx][0]):
                 logging.info(
-                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok.cpu()):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_u}")
+                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok.cpu()):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_ups_de[idx]}")
                 save_fixed_encoding_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
                                                float(np.round(score.cpu().numpy(), decimals=4)),
-                                               f"{np.exp(score.cpu().numpy()):.2%}", runner_u))
+                                               f"{np.exp(score.cpu().numpy()):.2%}", runner_ups_de[idx]))
             save_all_fixed_encoding_de.append([int(fixed_token[idx].cpu()), save_fixed_encoding_de])
 
         #--added end
