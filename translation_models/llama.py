@@ -206,8 +206,8 @@ class LLaMaTranslationModel(TranslationModel):
         top_3_tok = normalized_top_tokens[2]
         top_2_val = normalized_top_values[1]
         top_3_val = normalized_top_values[2]
-        runner_ups = [[int(top_2_tok.cpu), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
-                           [int(top_3_tok.cpu), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]]
+        runner_ups = [[int(top_2_tok.cpu()), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
+                           [int(top_3_tok.cpu()), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]]
 
         return runner_ups
 
