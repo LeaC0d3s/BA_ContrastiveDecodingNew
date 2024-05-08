@@ -102,13 +102,6 @@ class MTTask:
             fixed_decoding_ids_de = {}
             fixed_decoding_ids_en = {}
             for idx, pair in enumerate(tqdm(list(zip(*multi_source_sentences)))):
-                """
-                translation, save_probs, save_origin_translation, save_origin_probs_de, save_origin_probs_en, save_all_enc_de, save_all_enc_en = translation_method(
-                    src_langs=src_langs,
-                    tgt_langs=tgt_langs,
-                    src_weights=src_weights,
-                    multi_source_sentences=pair,
-                    )"""
                 translation, save_probs, save_all_enc_de, save_all_enc_en = translation_method(
                     src_langs=src_langs,
                     tgt_langs=tgt_langs,
@@ -125,19 +118,20 @@ class MTTask:
             raise NotImplementedError
 
         if type == 'direct':
-            file_name = 'direct-control-NT'
+            file_name = 'direct-topk3'
         elif type == 'contrastive':
             file_name = 'contrastive-{0}-{1}'.format(source_contrastive, source_weight)
             if language_contrastive:
-                file_name += "-NT-lang-{0}-{1}".format('+'.join(language_contrastive), language_weight)
+                file_name += "-topk3-lang-{0}-{1}".format('+'.join(language_contrastive), language_weight)
         else:
             raise NotImplementedError
 
         with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".txt", 'w') as f:
             f.write("\n".join(translations))
+        if type == "direct":
+            with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".json", 'w') as f:
+                json.dump(save_probs, f)
 
-        with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".json", 'w') as f:
-            json.dump(save_probs, f)
         if type == "contrastive":
             with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
                 json.dump(translations_probs, f)

@@ -195,6 +195,21 @@ class LLaMaTranslationModel(TranslationModel):
         )
 
         return output
+    def get_runner_ups(self, greedy_score):
+
+        normalized = torch.nn.functional.softmax(greedy_score, dim=1)
+        normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
+        normalized_top_values = normalized.topk(3, dim=1).values[0]
+        # print(normalized.topk(3, dim=1))
+        #print("new token probs:")
+        top_2_tok = normalized_top_tokens[1]
+        top_3_tok = normalized_top_tokens[2]
+        top_2_val = normalized_top_values[1]
+        top_3_val = normalized_top_values[2]
+        runner_ups = [[int(top_2_tok.cpu), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
+                           [int(top_3_tok.cpu), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]]
+
+        return runner_ups
 
     def _translate_multi_source(self,
                                 multi_source_sentences: List[str],
@@ -295,17 +310,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
 
-        greedy_score = outputs.scores[0]
-        print(type(greedy_score), greedy_score.shape, len(outputs.scores), type(outputs.scores))
-        print(greedy_score.topk(3, dim=1))
-        for greedy_score in outputs.scores:
-            normalized = torch.nn.functional.softmax(greedy_score, dim=1)
-            normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
-            normalized_top_values = normalized.topk(3, dim=1).values[0]
-            #print(normalized.topk(3, dim=1))
-            print("new token probs:")
-            for tok, probs in zip(normalized_top_tokens, normalized_top_values):
-                print(tok.cpu(), self.tokenizer.decode(tok.cpu()), f"{probs.cpu():.2%}")
+
 
         first_input_id = input_ids[0]
         #second_input_id = input_ids[1]
@@ -316,8 +321,10 @@ class LLaMaTranslationModel(TranslationModel):
         cd_tokens = outputs.sequences[0][input_length:]
         fixed_decoding_de = []
         fixed_decoding_de_trans = []
+        runner_ups_de = []
         fixed_decoding_en = []
         fixed_decoding_en_trans = []
+        runner_ups_en = []
         fixed_token = []
         for tok in cd_tokens:
             if tok == 2:
@@ -374,12 +381,15 @@ class LLaMaTranslationModel(TranslationModel):
             fixed_decoding_de_trans.append(self.model.compute_transition_scores(outputs_german.sequences,
                                                                                  outputs_german.scores,
                                                                                  normalize_logits=True))
+            runner_ups_de.append(self.get_runner_ups(outputs_german.scores[0]))
 
-            outputs_english = self.generate_step_by_step(input_ids_en, attention_mask_en, num_beams,**kwargs)
+            outputs_english = self.generate_step_by_step(input_ids_en, attention_mask_en, num_beams, **kwargs)
             fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[1]:])
             fixed_decoding_en_trans.append(
                 self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
                                                      normalize_logits=True))
+            runner_ups_en.append(self.get_runner_ups(outputs_english.scores[0]))
+
             fixed_token.append(tok)
 
         #logging.info(output)
@@ -412,10 +422,25 @@ class LLaMaTranslationModel(TranslationModel):
 
         print("en sent with 'translate to German-English scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens))
-        for tok, score in zip(generated_tokens, transition_scores[0]):
-            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
-            save_probs.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
+        runner_ups = []
+        for greedy_score in outputs.scores:
+            normalized = torch.nn.functional.softmax(greedy_score, dim=1)
+            normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
+            normalized_top_values = normalized.topk(3, dim=1).values[0]
+            # print(normalized.topk(3, dim=1))
+            print("new token probs:")
+            top_2_tok = normalized_top_tokens[1]
+            top_3_tok = normalized_top_tokens[2]
+            top_2_val = normalized_top_values[1]
+            top_3_val = normalized_top_values[2]
+            runner_ups.append([[int(top_2_tok.cpu), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
+                          [int(top_3_tok.cpu), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]])
+
+        for tok, score in zip(generated_tokens, transition_scores[0], runner_ups):
+            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_ups}")
+
+            save_probs.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}", runner_ups))
 
         print("CD base input incrementally increased (Translate to English): ")
         #print(fixed_decoding_en, fixed_decoding_en_trans)
@@ -423,12 +448,12 @@ class LLaMaTranslationModel(TranslationModel):
             print("fixed up to here: ", int(fixed_token[idx].cpu()))
             #print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
             save_fixed_encoding_en = []
-            for tok, score in zip(enc, fixed_decoding_en_trans[idx][0]):
+            for tok, score, runner_u in zip(enc, fixed_decoding_en_trans[idx][0], runner_ups_en[idx]):
                 logging.info(
-                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_u}")
                 save_fixed_encoding_en.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
                                    float(np.round(score.cpu().numpy(), decimals=4)),
-                                   f"{np.exp(score.cpu().numpy()):.2%}"))
+                                   f"{np.exp(score.cpu().numpy()):.2%}", runner_u))
             save_all_fixed_encoding_en.append([int(fixed_token[idx].cpu()), save_fixed_encoding_en])
 
         print("CD base input incrementally increased (Translate to German): ")
@@ -436,36 +461,13 @@ class LLaMaTranslationModel(TranslationModel):
             print("fixed up to here: ", int(fixed_token[idx].cpu()))
             # print(fixed_decoding_en_trans[idx], fixed_decoding_en_trans[idx][0])
             save_fixed_encoding_de = []
-            for tok, score in zip(enc, fixed_decoding_de_trans[idx][0]):
+            for tok, score, runner_u in zip(enc, fixed_decoding_de_trans[idx][0], runner_ups_de[idx]):
                 logging.info(
-                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok.cpu()):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
+                    f"| {tok.cpu():5d} | {self.tokenizer.decode(tok.cpu()):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_u}")
                 save_fixed_encoding_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
                                                float(np.round(score.cpu().numpy(), decimals=4)),
-                                               f"{np.exp(score.cpu().numpy()):.2%}"))
+                                               f"{np.exp(score.cpu().numpy()):.2%}", runner_u))
             save_all_fixed_encoding_de.append([int(fixed_token[idx].cpu()), save_fixed_encoding_de])
-
-
-
-        """
-        print("en sent with 'translate to German scores'...: ")
-        logging.info(self.tokenizer.decode(generated_tokens_orig_de))
-        for tok, score in zip(generated_tokens_orig_de, transition_scores_orig[0]):
-            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_de.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
-
-
-
-        print("en sent with 'translate to English scores'...: ")
-        logging.info(self.tokenizer.decode(generated_tokens_orig_en))
-        for tok, score in zip(generated_tokens_orig_en, transition_scores_orig[1]):
-            logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
-            save_origin_probs_en.append((int(tok), self.tokenizer.decode(tok), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}"))
-        """
-
-
-
-
-
 
         #--added end
         output = {
