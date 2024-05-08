@@ -295,12 +295,13 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
 
-        greedy_score = outputs.scores[0]
+        greedy_score = outputs.scores[2]
         print(type(greedy_score), greedy_score.shape, len(outputs.scores), type(outputs.scores))
-        print(greedy_score.topk(5, dim=1))
+        print(greedy_score.topk(3, dim=1))
         for greedy_score in outputs.scores:
-            greedy_top_tokens = self.tokenizer.batch_decode(greedy_score.topk(5, dim=1).indices)[0].split()
-            print(greedy_top_tokens)
+            greedy_top_tokens = self.tokenizer.batch_decode(greedy_score.topk(3, dim=1).indices)[0].split()
+            for tok in greedy_top_tokens:
+                print(tok)
 
         first_input_id = input_ids[0]
         #second_input_id = input_ids[1]
