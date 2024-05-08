@@ -74,7 +74,7 @@ class LLaMaTranslationModel(TranslationModel):
                    batch_size: int = 1,
                    num_beams: int = 1,
                    **kwargs,
-                   ) -> Union[List[str], List[Tuple[str, float]], Tuple[List[str], Dict[int, Tuple[str, List[Tuple[int, str, float, str]]]]]]:
+                   ) -> Union[List[str], List[Tuple[str, float]]]:
         if return_score:
             raise NotImplementedError
         if batch_size != 1:
@@ -175,6 +175,27 @@ class LLaMaTranslationModel(TranslationModel):
 
         return translations, save_probs
 
+    def generate_step_by_step(self, input_ids, attention_mask, num_beams):
+        output = self.model.generate(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            num_beams=num_beams,
+            eos_token_id=self.tokenizer.eos_token_id,
+            # max_length=1200,
+            max_new_tokens=1,
+            remove_invalid_values=True,
+            # Disable sampling
+            do_sample=False,
+            temperature=1.0,
+            top_p=1.0,
+            # manually added
+            return_dict_in_generate=True,
+            output_scores=True,
+            **kwargs,
+        )
+
+        return output
+
     def _translate_multi_source(self,
                                 multi_source_sentences: List[str],
                                 src_langs: List[str],
@@ -270,47 +291,15 @@ class LLaMaTranslationModel(TranslationModel):
             output_scores=True,
             **kwargs,
         )
-        """
-        outputs_orig = self.model.generate(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            num_beams=num_beams,
-            eos_token_id=self.tokenizer.eos_token_id,
-            max_length=1200,
-            #logits_processor=logits_processor,
-            remove_invalid_values=True,
-            # Disable sampling
-            do_sample=False,
-            temperature=1.0,
-            top_p=1.0,
-            # manually added
-            return_dict_in_generate=True,
-            output_scores=True,
-            **kwargs,
-        )
 
-        
-        outputs_german = self.model.generate(
-            input_ids=input_ids_de,
-            attention_mask=attention_mask_de,
-            num_beams=num_beams,
-            eos_token_id=self.tokenizer.eos_token_id,
-            max_length=1200,
-            # logits_processor=logits_processor,
-            remove_invalid_values=True,
-            # Disable sampling
-            do_sample=False,
-            temperature=1.0,
-            top_p=1.0,
-            # manually added
-            output_logits=True,
-            return_dict_in_generate=True,
-            output_scores=True,
-            **kwargs,
-        )
-        """
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
+
+        greedy_score = outputs.scores[0]
+        print(type(greedy_score), greedy_score.shape, greedy_score.topk(5, dim=1))
+        # greedy_top_tokens = self.tokenizer.batch_decode(greedy_score.topk(5, dim=1).indices)[0].split()
+        # for token in greedy_top_tokens:
+        # print(token)
         first_input_id = input_ids[0]
         #second_input_id = input_ids[1]
 
@@ -326,15 +315,15 @@ class LLaMaTranslationModel(TranslationModel):
         for tok in cd_tokens:
             if tok == 2:
                 break
-            # Add the current token to the input IDs
+            # incremenatlly Add next token from the CD output to the input IDs of the German and English ids
             input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]]).to(self.model.device)], dim=1)
             input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]]).to(self.model.device)], dim=1)
 
 
-            # Update the attention mask to consider the new token
+            # Update the attention mask by adding a 1 at the end for every new token in the Ger and Eng input
             attention_mask_de = torch.cat([attention_mask_de, torch.ones_like(attention_mask_de[:, :1]).to(self.model.device)], dim=1)
             attention_mask_en = torch.cat([attention_mask_en, torch.ones_like(attention_mask_en[:, :1]).to(self.model.device)], dim=1)
-
+            """
             outputs_german = self.model.generate(
                 input_ids=input_ids_de,
                 attention_mask=attention_mask_de,
@@ -372,12 +361,15 @@ class LLaMaTranslationModel(TranslationModel):
                 output_scores=True,
                 **kwargs,
             )
+            """
+            outputs_german = self.generate_step_by_step(input_ids_de, attention_mask_de, num_beams)
             fixed_decoding_de.append(outputs_german.sequences[0][input_ids_de.shape[1]:])
             fixed_decoding_de_trans.append(self.model.compute_transition_scores(outputs_german.sequences,
                                                                                  outputs_german.scores,
                                                                                  normalize_logits=True))
-            fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[1]:])
 
+            outputs_english = self.generate_step_by_step(input_ids_en, attention_mask_en, num_beams)
+            fixed_decoding_en.append(outputs_english.sequences[0][input_ids_en.shape[1]:])
             fixed_decoding_en_trans.append(
                 self.model.compute_transition_scores(outputs_english.sequences, outputs_english.scores,
                                                      normalize_logits=True))
@@ -389,12 +381,10 @@ class LLaMaTranslationModel(TranslationModel):
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
         #calculate probabilities for generated translations (baseline German + English) tokens
-        #transition_scores_orig = self.model.compute_transition_scores(
-        #    outputs_orig.sequences, outputs_orig.scores, normalize_logits=True)
+
+
 
         generated_tokens = outputs.sequences[0][input_length:]
-        #generated_tokens_orig_de = outputs_orig.sequences[0][input_length:]
-        #generated_tokens_orig_en = outputs_orig.sequences[1][input_length_orig_en:]
 
         #decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
         #decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
