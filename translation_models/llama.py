@@ -437,7 +437,7 @@ class LLaMaTranslationModel(TranslationModel):
             runner_ups.append([[int(top_2_tok.cpu()), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
                           [int(top_3_tok.cpu()), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]])
 
-        for tok, score in zip(generated_tokens, transition_scores[0], runner_ups):
+        for tok, score, runner_ups in zip(generated_tokens, transition_scores[0], runner_ups):
             logging.info(f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_ups}")
 
             save_probs.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()), float(np.round(score.cpu().numpy(), decimals=4)), f"{np.exp(score.cpu().numpy()):.2%}", runner_ups))
