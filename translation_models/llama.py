@@ -295,8 +295,8 @@ class LLaMaTranslationModel(TranslationModel):
 
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
 
-        greedy_score = outputs.scores[0][0]
-        print(type(greedy_score), greedy_score.shape)
+        greedy_score = outputs.scores[0]
+        print(type(greedy_score), greedy_score.shape, len(outputs.scores))
         print(greedy_score.topk(5, dim=1))
         # greedy_top_tokens = self.tokenizer.batch_decode(greedy_score.topk(5, dim=1).indices)[0].split()
         # for token in greedy_top_tokens:
