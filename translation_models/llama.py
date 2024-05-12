@@ -151,6 +151,32 @@ class LLaMaTranslationModel(TranslationModel):
             generated_tokens = output_rsh["tokenized_sequence"][len(output_rsh["input_ids"][0]):]
             print(f"{self.src_lang} sent with 'translate to {self.tgt_lang}; scores'...: ")
             logging.info(self.tokenizer.decode(generated_tokens))
+
+            runner_ups = []
+            for greedy_score in output.scores:
+                normalized = torch.nn.functional.softmax(greedy_score, dim=1)
+                normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
+                normalized_top_values = normalized.topk(3, dim=1).values[0]
+                # print(normalized.topk(3, dim=1))
+                # print("new token probs:")
+                top_2_tok = normalized_top_tokens[1]
+                top_3_tok = normalized_top_tokens[2]
+                top_2_val = normalized_top_values[1]
+                top_3_val = normalized_top_values[2]
+                runner_ups.append(
+                    [[int(top_2_tok.cpu()), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
+                     [int(top_3_tok.cpu()), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]])
+
+            save_prob = []
+            for tok, score, runner_ups in zip(generated_tokens, transition_scores[0], runner_ups):
+                logging.info(
+                    f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%} | {runner_ups}")
+
+                save_prob.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
+                                   float(np.round(score.cpu().numpy(), decimals=4)),
+                                   f"{np.exp(score.cpu().numpy()):.2%}", runner_ups))
+
+            """
             save_prob = []
             for tok, score in zip(generated_tokens, transition_scores[0]):
                 logging.info(
@@ -159,6 +185,7 @@ class LLaMaTranslationModel(TranslationModel):
                 save_prob.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
                                    float(np.round(score.cpu().numpy(), decimals=4)),
                                    f"{np.exp(score.cpu().numpy()):.2%}"))
+            """
 
             gen_seq = decoded_output[0]['generated_text']
             #logging.info(gen_seq)
@@ -337,45 +364,7 @@ class LLaMaTranslationModel(TranslationModel):
             # Update the attention mask by adding a 1 at the end for every new token in the Ger and Eng input
             attention_mask_de = torch.cat([attention_mask_de, torch.ones_like(attention_mask_de[:, :1]).to(self.model.device)], dim=1)
             attention_mask_en = torch.cat([attention_mask_en, torch.ones_like(attention_mask_en[:, :1]).to(self.model.device)], dim=1)
-            """
-            outputs_german = self.model.generate(
-                input_ids=input_ids_de,
-                attention_mask=attention_mask_de,
-                num_beams=num_beams,
-                eos_token_id=self.tokenizer.eos_token_id,
-                #max_length=1200,
-                max_new_tokens=1,
-                remove_invalid_values=True,
-                # Disable sampling
-                do_sample=False,
-                temperature=1.0,
-                top_p=1.0,
-                # manually added
-                #output_logits=True,
-                return_dict_in_generate=True,
-                output_scores=True,
-                **kwargs,
-            )
 
-            outputs_english = self.model.generate(
-                input_ids=input_ids_en,
-                attention_mask=attention_mask_en,
-                num_beams=num_beams,
-                eos_token_id=self.tokenizer.eos_token_id,
-                #max_length=1200,
-                max_new_tokens=1,
-                remove_invalid_values=True,
-                # Disable sampling
-                do_sample=False,
-                temperature=1.0,
-                top_p=1.0,
-                # manually added
-                #output_logits=True,
-                return_dict_in_generate=True,
-                output_scores=True,
-                **kwargs,
-            )
-            """
             outputs_german = self.generate_step_by_step(input_ids_de, attention_mask_de, num_beams, **kwargs)
             fixed_decoding_de.append(outputs_german.sequences[0][input_ids_de.shape[1]:])
             fixed_decoding_de_trans.append(self.model.compute_transition_scores(outputs_german.sequences,
@@ -397,23 +386,15 @@ class LLaMaTranslationModel(TranslationModel):
         # calculate probabilities for generated CD tokens
         transition_scores = self.model.compute_transition_scores(
             outputs.sequences, outputs.scores, normalize_logits=True)
-        #calculate probabilities for generated translations (baseline German + English) tokens
-
-
 
         generated_tokens = outputs.sequences[0][input_length:]
 
-        #decoded_de = self.tokenizer.decode(generated_tokens_orig_de)
-        #decoded_en = self.tokenizer.decode(generated_tokens_orig_en)
         # Loop over each time step in the generated sequence
 
         #print(outputs.sequences[0][input_length:])
         #cd_tokens = outputs.sequences[0][input_length:]
 
         # Initialize an empty list to store tuple
-        #save_origin_probs_de = []
-        #save_origin_probs_en = []
-        #save_origin_translation = [str(decoded_de), str(decoded_en)]
         save_probs = []
         save_all_fixed_encoding_en = []
         save_all_fixed_encoding_de = []
