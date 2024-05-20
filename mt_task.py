@@ -126,14 +126,14 @@ class MTTask:
         else:
             raise NotImplementedError
 
-        with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".txt", 'w') as f:
+        with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".txt", 'w', encoding="utf-8") as f:
             f.write("\n".join(translations))
         if type == "direct":
-            with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".json", 'w') as f:
+            with open(str(self.out_dir)+"/"+file_name+"."+self.language_pair+".json", 'w', encoding="utf-8") as f:
                 json.dump(save_probs, f)
 
         if type == "contrastive":
-            with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w') as f:
+            with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w', encoding="utf-8") as f:
                 json.dump(translations_probs, f)
 
             #with open(str(self.out_dir)+"/"+file_name+".probs_orig_de.json", 'w') as f:
@@ -141,9 +141,9 @@ class MTTask:
             #with open(str(self.out_dir)+"/"+file_name+".probs_orig_en.json", 'w') as f:
                 #json.dump(origin_translation_probs_en, f)
 
-            with open(str(self.out_dir)+"/"+file_name+".probs_de_with_fixed_incremental_cd.json", "w")as f:
+            with open(str(self.out_dir)+"/"+file_name+".probs_de_with_fixed_incremental_cd.json", "w", encoding="utf-8")as f:
                 json.dump(fixed_decoding_ids_de, f)
-            with open(str(self.out_dir) + "/" + file_name + ".probs_en_with_fixed_incremental_cd.json", "w") as f:
+            with open(str(self.out_dir) + "/" + file_name + ".probs_en_with_fixed_incremental_cd.json", "w", encoding="utf-8") as f:
                 json.dump(fixed_decoding_ids_en, f)
 
         if not os.path.isfile(str(self.out_dir)+"/"+"all_ref.text"):
