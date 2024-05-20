@@ -118,11 +118,11 @@ class MTTask:
             raise NotImplementedError
 
         if type == 'direct':
-            file_name = 'direct-topk3'
+            file_name = 'final-baseline-topk3'
         elif type == 'contrastive':
             file_name = 'contrastive-{0}-{1}'.format(source_contrastive, source_weight)
             if language_contrastive:
-                file_name += "-topk3-lang-{0}-{1}".format('+'.join(language_contrastive), language_weight)
+                file_name += "-final-topk3-lang-{0}-{1}".format('+'.join(language_contrastive), language_weight)
         else:
             raise NotImplementedError
 
@@ -135,11 +135,6 @@ class MTTask:
         if type == "contrastive":
             with open(str(self.out_dir)+"/"+file_name+".probs_CD.json", 'w', encoding="utf-8") as f:
                 json.dump(translations_probs, f)
-
-            #with open(str(self.out_dir)+"/"+file_name+".probs_orig_de.json", 'w') as f:
-                #json.dump(origin_translation_probs_de, f)
-            #with open(str(self.out_dir)+"/"+file_name+".probs_orig_en.json", 'w') as f:
-                #json.dump(origin_translation_probs_en, f)
 
             with open(str(self.out_dir)+"/"+file_name+".probs_de_with_fixed_incremental_cd.json", "w", encoding="utf-8")as f:
                 json.dump(fixed_decoding_ids_de, f)
