@@ -156,7 +156,7 @@ class MTTask:
             target_sentences = [sentence.strip() for sentence in target_sentences]
 
 
-            with open(str(self.out_dir) + "/" + "all_ref.txt", 'w') as f:
+            with open(str(self.out_dir) + "/" + "all_ref.txt", 'w', encoding="utf-8") as f:
                 f.write("\n".join(target_sentences))
 
         return Path(f.name)
