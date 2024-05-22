@@ -8,7 +8,7 @@
   <img src="logo.png" width="500"/>
 </p>
 
-This repository implements source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098).
+This repository is forked and adapted from the original creator: source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098).
 
 - In **source-contrastive decoding**, we search for a translation that maximizes P(_Y_|_X_) - λ·P(_Y_|_X'_), where _X'_ is a random source segment. This penalizes hallucinations.
 
@@ -18,31 +18,40 @@ This repository implements source-contrastive and language-contrastive decoding,
 <img src="illustration.png" alt="Our decoding objective yields a translation that is probable given the actual input, but improbable given a source-contrastive or language-contrastive input." width="400">
 </p>
 
+
 ## Installation
 
-- `pip install -r requirements.txt`
+!Note: The `transformers`library was upgraded from the original version `==4.33.1` to `==4.38.2`.
+- `pip install -r requirements.txt
 
 ## Usage
 
 **Example commands**
 
-Source-contrastive decoding with [M2M-100 (418M)](https://arxiv.org/abs/2010.11125) on Asturian–Croatian, with λ_src=0.7:
-- `python -m scripts.run --model_path m2m100_418M --language_pairs ast-hr --source_contrastive --source_weight -0.7`
+Baseline with [Llama 2 Chat (13B)](https://arxiv.org/abs/2307.09288) on English–German, using prompting with a one-shot example:
+- `python -m scripts.run --model_path llama-2-13b-chat --language_pairs en-de  --oneshot`
 
-Source-contrastive and language-contrastive decoding with [SMaLL-100](https://arxiv.org/abs/2210.11621) on Pashto–Asturian, with 2 random source segments, λ_src=0.7, λ_lang=0.1, and English and Pashto as contrastive target languages:
-- `python -m scripts.run --model_path small100 --language_pairs ps-ast --source_contrastive 2 --source_weight -0.7 --language_contrastive en ps  --language_weight -0.1`
+Language-contrastive decoding with [Llama 2 Chat (13B)](https://arxiv.org/abs/2307.09288) on English–German, with λ_lang=0.5 and English as contrastive target language, using prompting with a one-shot example:
+- `python -m scripts.run --model_path llama-2-13b-chat --language_pairs en-de --language_contrastive en  --language_weight -0.5 --oneshot`
 
-Language-contrastive decoding with [Llama 2 Chat (7B)](https://arxiv.org/abs/2307.09288) on English–German, with λ_lang=0.5 and English as contrastive target language, using prompting with a one-shot example:
-- `python -m scripts.run --model_path llama-2-7b-chat --language_pairs en-de --language_contrastive en  --language_weight -0.5 --oneshot`
+Language-contrastive decoding with [Llama 2 Chat (13B)](https://arxiv.org/abs/2307.09288) on English–German, with λ_lang=0.9 and English as contrastive target language, using prompting with a one-shot example:
+- `python -m scripts.run --model_path llama-2-13b-chat --language_pairs en-de --language_contrastive en  --language_weight -0.9 --oneshot`
+
+In addition to the .txt files containing the translations, this repository also produces 3 json files, containing:
+- A dictionary containing the top 3 most probable tokens at each generation step of the decoding.
+- A dictionary containing the top 3 most probable German tokens given the previous generated CD tokens.
+- A dictionary containing the top 3 most probable English tokens given the previous generated CD tokens.
+
+
 
 ## Dataset and Models:
 
-This repository automatically downloads and uses [FLORES-101](https://huggingface.co/datasets/gsarti/flores_101) for evaluation. ```devtest``` section is used for the evaluation.
+This repository automatically opens and uses the pre-downloaded ```devtest``` sentences for English and German from the [FLORES-101](https://huggingface.co/datasets/gsarti/flores_101) dataset.
+- ```de.txt```
+- ```en.txt```
 
 Multiple models are implemented:
 
-- [M2M-100 (418M)](https://huggingface.co/facebook/m2m100_418M). Use `--model_path m2m100_418M`
-- [SMaLL-100](https://huggingface.co/alirezamsh/small100). Use `--model_path small100`
 - [Llama 2 7B Chat](https://huggingface.co/meta-llama). Use `--model_path llama-2-7b-chat` or `llama-2-13b-chat`
 
 
