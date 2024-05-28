@@ -1,13 +1,13 @@
 # Contrastive Decoding
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-red.svg)](#python)
-[![arxiv](https://img.shields.io/badge/arXiv-2309.07098-b31b1b.svg)](https://arxiv.org/abs/2309.07098)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
 <p align="center">
   <img src="logo.png" width="500"/>
 </p>
 
+This repository is for my bachelor thesis. It contains all the code I used for reproducing the outputs for my evaluations as well as all the scrips I wrote in addition to process the obtained data. This README provides an overview of all the files and folder and how to use them.
 This repository is forked and adapted from the original creator: source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098).
 
 - In **source-contrastive decoding**, we search for a translation that maximizes P(_Y_|_X_) - λ·P(_Y_|_X'_), where _X'_ is a random source segment. This penalizes hallucinations.
@@ -18,11 +18,18 @@ This repository is forked and adapted from the original creator: source-contrast
 <img src="illustration.png" alt="Our decoding objective yields a translation that is probable given the actual input, but improbable given a source-contrastive or language-contrastive input." width="400">
 </p>
 
+For my thesis I only used the **language-contrastive decoding** part of their implementation.
+
 
 ## Installation
 
-!Note: The `transformers`library was upgraded from the original version `==4.33.1` to `==4.38.2`.
+!Note: The `transformers`library was upgraded from the original version `==4.33.1` to `==4.38.2` as there were some conflicts with my working environement.
 - `pip install -r requirements.txt
+
+
+## Structure of the Repsitory
+
+
 
 ## Usage
 
