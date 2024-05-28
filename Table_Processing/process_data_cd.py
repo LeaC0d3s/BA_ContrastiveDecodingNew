@@ -8,7 +8,7 @@ file_path = 'prob0.5_comp_table_all_final.xlsx'  # Replace with your actual file
 xls = pd.ExcelFile(file_path)
 
 # Read the 'Blatt A - prob_comp_table_A_ful' table from row 2
-table_a = pd.read_excel(xls, 'Blatt C - prob0.5_comp_table_C', header=2)
+table_a = pd.read_excel(xls, 'Blatt G - prob0.5_comp_table_G', header=2)
 
 table_a.columns = [
         'Idx', 'tok1_int_cd5', 'tok1_cd5', 'tok1_cd5%', 'tok2_int_cd5', 'tok2_cd5', 'tok2_cd5%', 'tok3_int_cd5',
@@ -39,46 +39,57 @@ filtered_table_a['tok3_en%'] = pd.to_numeric(filtered_table_a['tok3_en%'], error
 
 
 # Create a directory to save the plots
-output_dir = 'plots_cd'
+output_dir = 'plots_cd05'
 os.makedirs(output_dir, exist_ok=True)
 
 plot_files = []
 # For each group, create a diagram showing the probabilities
 for name, group in grouped:
-    print(name, group)
+    #print(name, group)
     plt.figure(figsize=(12, 6))
     max_length = len(group)
 
 
     if 'tok1_cd5%' in group.columns and not group['tok1_cd5%'].isna().all():
         tok1_cd5_percents = group['tok1_cd5%'].reset_index(drop=True)
-        plt.plot(range(1, len(tok1_cd5_percents) + 1), tok1_cd5_percents, label='tok1_cd5%', marker='o', color='green')
+        plt.plot(range(1, len(tok1_cd5_percents) + 1), tok1_cd5_percents, label='tok1_cd5%', marker='o', color='green', zorder=1)
 
     for i in range(len(group)):
         if pd.notna(group['tok1_ger%'].iloc[i]):
-            plt.scatter(i + 1, group['tok1_ger%'].iloc[i], label='tok1_ger%' if i == 0 else "", color='magenta',marker='*')
-            plt.annotate(group['tok1_ger'].iloc[i], (i + 1, group['tok1_ger%'].iloc[i]), ha='center', fontsize=8,
-                         xytext=(0, -10), textcoords='offset points')
+            plt.scatter(i + 1, group['tok1_ger%'].iloc[i], label='tok1_ger%' if i == 0 else "", color='#3C3D99',marker='*',zorder=3)
+            if group['tok1_int_cd5'].iloc[i] == group['tok1_int_ger'].iloc[i]:
+                plt.annotate(group['tok1_ger'].iloc[i], (i + 1, group['tok1_ger%'].iloc[i]), ha='center', fontsize=8,
+                             xytext=(0, -10), textcoords='offset points')
+
         if pd.notna(group['tok2_ger%'].iloc[i]):
-            plt.scatter(i + 1, group['tok2_ger%'].iloc[i], label='tok2_ger%' if i == 0 else "", color='magenta',marker='*')
-            plt.annotate(group['tok2_ger'].iloc[i], (i + 1, group['tok2_ger%'].iloc[i]), ha='center', fontsize=8,
-                         xytext=(0, -10), textcoords='offset points')
+            plt.scatter(i + 1, group['tok2_ger%'].iloc[i], label='tok2_ger%' if i == 0 else "", color='#8481DD',marker='*',zorder=3)
+            if group['tok1_int_cd5'].iloc[i] == group['tok2_int_ger'].iloc[i]:
+                plt.annotate(group['tok2_ger'].iloc[i], (i + 1, group['tok2_ger%'].iloc[i]), ha='center', fontsize=8,
+                             xytext=(0, -10), textcoords='offset points')
+
         if pd.notna(group['tok3_ger%'].iloc[i]):
-            plt.scatter(i + 1, group['tok3_ger%'].iloc[i], label='tok3_ger%' if i == 0 else "", color='magenta', marker='*')
-            plt.annotate(group['tok3_ger'].iloc[i], (i + 1, group['tok3_ger%'].iloc[i]), ha='center', fontsize=8,
-                         xytext=(0, -10), textcoords='offset points')
+            plt.scatter(i + 1, group['tok3_ger%'].iloc[i], label='tok3_ger%' if i == 0 else "", color='#B2B0EA', marker='*',zorder=3)
+            if group['tok1_int_cd5'].iloc[i] == group['tok3_int_ger'].iloc[i]:
+                plt.annotate(group['tok3_ger'].iloc[i], (i + 1, group['tok3_ger%'].iloc[i]), ha='center', fontsize=8,
+                             xytext=(0, -10), textcoords='offset points')
+
+
     for i in range(len(group)):
         if pd.notna(group['tok1_en%'].iloc[i]):
-            plt.scatter(i + 1, group['tok1_en%'].iloc[i], label='tok1_en%' if i == 0 else "", color='#CD853F', marker='s')
-            plt.annotate(group['tok1_en'].iloc[i], (i + 1, group['tok1_en%'].iloc[i]), ha='center', fontsize=8,
-                         xytext=(0, -10), textcoords='offset points')
+            plt.scatter(i + 1, group['tok1_en%'].iloc[i], label='tok1_en%' if i == 0 else "", color='#8F4700', marker='s',zorder=2)
+            if group['tok1_int_cd5'].iloc[i] == group['tok1_int_en'].iloc[i]:
+                plt.annotate(group['tok1_en'].iloc[i], (i + 1, group['tok1_en%'].iloc[i]), ha='center', fontsize=8,
+                             xytext=(0, -10), textcoords='offset points')
+
         if pd.notna(group['tok2_en%'].iloc[i]):
-            plt.scatter(i + 1, group['tok2_ger%'].iloc[i], label='tok2_en%' if i == 0 else "", color='#CD853F', marker='s')
-            plt.annotate(group['tok2_en'].iloc[i], (i + 1, group['tok2_en%'].iloc[i]), ha='center', fontsize=8,
+            plt.scatter(i + 1, group['tok2_en%'].iloc[i], label='tok2_en%' if i == 0 else "", color='#C46100', marker='s',zorder=2)
+            if group['tok1_int_cd5'].iloc[i] == group['tok2_int_en'].iloc[i]:
+                plt.annotate(group['tok2_en'].iloc[i], (i + 1, group['tok2_en%'].iloc[i]), ha='center', fontsize=8,
                          xytext=(0, -10), textcoords='offset points')
         if pd.notna(group['tok3_en%'].iloc[i]):
-            plt.scatter(i + 1, group['tok3_en%'].iloc[i], label='tok3_en%' if i == 0 else "", color='#CD853F', marker='s')
-            plt.annotate(group['tok3_en'].iloc[i], (i + 1, group['tok3_en%'].iloc[i]), ha='center', fontsize=8,
+            plt.scatter(i + 1, group['tok3_en%'].iloc[i], label='tok3_en%' if i == 0 else "", color='#EC7A08', marker='s',zorder=2)
+            if group['tok1_int_cd5'].iloc[i] == group['tok3_int_en'].iloc[i]:
+                plt.annotate(group['tok3_en'].iloc[i], (i + 1, group['tok3_en%'].iloc[i]), ha='center', fontsize=8,
                          xytext=(0, -10), textcoords='offset points')
 
     """
@@ -116,7 +127,7 @@ for name, group in grouped:
     plt.xticks(range(1, max_length + 1))
     plt.legend()
     plt.grid(True)
-    plt.show()
+    #plt.show()
     plot_file = os.path.join(output_dir, f'plot_0.5_{name}.png')
     plt.savefig(plot_file)
     plot_files.append(plot_file)
@@ -124,9 +135,9 @@ for name, group in grouped:
 
 
 # Create an Excel file and insert the images into the sheet
-excel_file = 'Filter_CD05_C.xlsx'
+excel_file = 'Filter_CD05_G.xlsx'
 workbook = xlsxwriter.Workbook(excel_file)
-worksheet = workbook.add_worksheet('Filter CD05 C')
+worksheet = workbook.add_worksheet('Filter CD05 G')
 
 # Insert images into the sheet
 row = 0
