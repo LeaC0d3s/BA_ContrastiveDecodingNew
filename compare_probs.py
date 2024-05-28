@@ -5,7 +5,43 @@ import json
 from itertools import zip_longest
 import csv
 
+
 def process_probs(key, value, cd_ger_data, cd_en_data):
+    print(key)
+    print(value[0])
+
+    new_line_counter = 0
+    control = 0
+    if value[1][:1][0][:4][1] != "\n":
+        control += 1
+
+    cd_ger_v = cd_ger_data[key][1]
+    cd_en_v = cd_en_data[key][1]
+
+    lines = [[f'{key}', value[1][:1][0][:4][0], value[1][:1][0][:4][1],value[1][:1][0][:4][3],None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]]
+    for tok_cd, tok_ger, tok_en in zip(value[1][1:], cd_ger_v, cd_en_v):
+        line = [f'{key}']
+        modified_cd = tok_cd[:2] + tok_cd[3:]
+        if modified_cd[:3][1] == "\n" or control == 1:
+            if control == 1:
+                control += 1
+            new_line_counter = new_line_counter + 1
+        #print(control, new_line_counter)
+
+        if new_line_counter >=2:
+            break
+
+        line += [modified_cd[:3][0],modified_cd[:3][1],modified_cd[:3][2],tok_cd[4][0][0],tok_cd[4][0][1],tok_cd[4][0][2], tok_cd[4][1][0],tok_cd[4][1][1], tok_cd[4][1][2]]
+        modified_ger = tok_ger[1][0][:2] + tok_ger[1][0][3:]
+        line += [modified_ger[:3][0],modified_ger[:3][1], modified_ger[:3][2], tok_ger[1][0][4][0][0],tok_ger[1][0][4][0][1], tok_ger[1][0][4][0][2], tok_ger[1][0][4][1][0],tok_ger[1][0][4][1][1], tok_ger[1][0][4][1][2]]
+        modified_en = tok_en[1][0][:2] + tok_en[1][0][3:]
+        line += [modified_en[:3][0],modified_en[:3][1], modified_en[:3][2], tok_en[1][0][4][0][0],tok_en[1][0][4][0][1], tok_en[1][0][4][0][2],
+                 tok_en[1][0][4][1][0],tok_en[1][0][4][1][1], tok_en[1][0][4][1][2]]
+        lines.append(line)
+    return lines
+
+
+def process_probs_redu(key, value, cd_ger_data, cd_en_data):
     #access parts of dictionary:
     print(key)  # = Sentence index 0-1011
     # print(value)#
@@ -14,25 +50,52 @@ def process_probs(key, value, cd_ger_data, cd_en_data):
                                         # List[List[int(Tok2_ID), str(Tok2), str(prob2_%)],
                                         # List[int(Tok3_ID), str(Tok3), str(prob3_%)]]
                                         # ]
+    new_line_counter = 0
+    control = 0
+    if value[1][:1][0][:4][1] != "\n":
+        control += 1
+
     cd_ger_v = cd_ger_data[key][1]
     cd_en_v = cd_en_data[key][1]
-    print(len(value[1][1:]), len(cd_ger_v), len(cd_en_v), )
-    print(f"first Top_CD Generated: {value[1][:1][0][:4]}")
-    prev_tok = (value[1][:1][0][0], value[1][:1][0][1])
+    #print(len(value[1][1:]), len(cd_ger_v), len(cd_en_v), )
+    #hello = 0
+    #print(f"first Top_CD Generated: {value[1][:1][0][:4]}")
+    #prev_tok = (value[1][:1][0][0], value[1][:1][0][1])
+    lines = [[f'{key}', value[1][:1][0][:4][1],value[1][:1][0][:4][3],None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]]
     for tok_cd, tok_ger, tok_en in zip(value[1][1:], cd_ger_v, cd_en_v):
-        print("Previous Generated Token: ", prev_tok)
+        line = [f'{key}']
         modified_cd = tok_cd[:2] + tok_cd[3:]
-        print(f"Top_CD: {modified_cd[:3]}\tTop2_CD: {tok_cd[4][0]}\tTop3_CD: {tok_cd[4][1]}")
+        if modified_cd[:3][1] == "\n" or control == 1:
+            if control == 1:
+                control += 1
+            new_line_counter = new_line_counter + 1
+        #print(control, new_line_counter)
+
+        if new_line_counter >=2:
+            break
+
+        #print("Previous Generated Token: ", prev_tok)
+
+        #print(f"Top_CD: {modified_cd[:3]}\tTop2_CD: {tok_cd[4][0]}\tTop3_CD: {tok_cd[4][1]}")
+        line += [modified_cd[:3][1],modified_cd[:3][2],tok_cd[4][0][1],tok_cd[4][0][2], tok_cd[4][1][1], tok_cd[4][1][2]]
+        #print(modified_cd[:3][1])
         modified_ger = tok_ger[1][0][:2] + tok_ger[1][0][3:]
-        print(f"Top_ger: {modified_ger[:3]}\tTop2_ger: {tok_ger[1][0][4][0]}\tTop3_ger: {tok_ger[1][0][4][1]}")
+        #print(f"Top_ger: {modified_ger[:3]}\tTop2_ger: {tok_ger[1][0][4][0]}\tTop3_ger: {tok_ger[1][0][4][1]}")
+        line += [modified_ger[:3][1], modified_ger[:3][2], tok_ger[1][0][4][0][1], tok_ger[1][0][4][0][2], tok_ger[1][0][4][1][1], tok_ger[1][0][4][1][2]]
         modified_en = tok_en[1][0][:2] + tok_en[1][0][3:]
-        print(f"Top_en: {modified_en[:3]}\tTop2_en: {tok_en[1][0][4][0]}\tTop3_en: {tok_en[1][0][4][1]}")
+        #print(f"Top_en: {modified_en[:3]}\tTop2_en: {tok_en[1][0][4][0]}\tTop3_en: {tok_en[1][0][4][1]}")
+        line += [modified_en[:3][1],modified_en[:3][2],tok_en[1][0][4][0][1],tok_en[1][0][4][0][2], tok_en[1][0][4][1][1], tok_en[1][0][4][1][2]]
+
+        lines.append(line)
+
+
 
         # print(tok_cd[4][0])
         # print(tok_cd[4][1])
-        prev_tok = (tok_cd[0], tok_cd[1])
+        #prev_tok = (tok_cd[0], tok_cd[1])
+    #print(lines)
 
-    return f"sentence {key} Completed"
+    return lines
 
 def escape_newlines(data):
     data = data.replace("\n", "\\n")
@@ -59,9 +122,9 @@ def process_comp_probs_reduced(key, base, cd05, cd09):
     if cd09[key][1][0][1] != "\n":
         control_9 += 1
     lines = []
-    for b, c5, c9 in zip_longest(base[key][1], cd05[key][1], cd09[key][1], fillvalue=(0, "\n", 0, 0, [(0, "\n", 0), (0, "\n", 0)])):
-        print("control: ", control_b, control_5, control_9)
-        print("new line before: ", new_line_counter_b, new_line_counter_5, new_line_counter_9)
+    for b, c5, c9 in zip_longest(base[key][1], cd05[key][1], cd09[key][1], fillvalue=(None, "\n", None, None, [(None, "\n", None), (None, "\n", None)])):
+        #print("control: ", control_b, control_5, control_9)
+        #print("new line before: ", new_line_counter_b, new_line_counter_5, new_line_counter_9)
         if b[1] == "\n" or control_b == 1:
             if control_b == 1:
                 control_b += 1
@@ -74,40 +137,44 @@ def process_comp_probs_reduced(key, base, cd05, cd09):
             if control_9 == 1:
                 control_9 += 1
             new_line_counter_9 = new_line_counter_9 + 1
-        print("new_line after: ", new_line_counter_b, new_line_counter_5, new_line_counter_9)
+        #print("new_line after: ", new_line_counter_b, new_line_counter_5, new_line_counter_9)
 
         if new_line_counter_b >=2 and new_line_counter_9 >= 2 and new_line_counter_5 >=2:
             break
 
-        line = []
+        line = [f'{key}']
         if new_line_counter_b == 1:
             #print("orig b ok")
             # print: tok1_int \t tok1_txt \t tok1_% \t tok2_int \t tok2_txt \t tok2_% \t tok3_int \t tok3_txt \t tok3_%
-            print(escape_newlines(f"{b[1]}\t{b[3]}\t{b[4][0][1]}\t{b[4][0][2]}\t{b[4][1][1]}\t{b[4][1][2]}\t"))
+            #print(escape_newlines(f"{b[1]}\t{b[3]}\t{b[4][0][1]}\t{b[4][0][2]}\t{b[4][1][1]}\t{b[4][1][2]}\t"))
             line += [b[1], b[3], b[4][0][1], b[4][0][2], b[4][1][1], b[4][1][2]]
         if new_line_counter_b >= 2:
             #print("b ok")
-            print(f"0\t0\t0\t0\t0\t0\t0")
-            line += ['0', '0', '0', '0', '0', '0']
+            #print(f"0\t0\t0\t0\t0\t0\t0")
+            #line += ['0', '0', '0', '0', '0', '0']
+            line += [None, None, None, None, None, None]
 
         if new_line_counter_5 == 1:
             #print("orig 5 ok")
-            print(escape_newlines(f"{c5[1]}\t{c5[3]}\t{c5[4][0][1]}\t{c5[4][0][2]}\t{c5[4][1][1]}\t{c5[4][1][2]}\t"))
+            #print(escape_newlines(f"{c5[1]}\t{c5[3]}\t{c5[4][0][1]}\t{c5[4][0][2]}\t{c5[4][1][1]}\t{c5[4][1][2]}\t"))
             line += [c5[1], c5[3], c5[4][0][1], c5[4][0][2], c5[4][1][1], c5[4][1][2]]
 
         if new_line_counter_5 >= 2:
             #print("5 ok")
-            print(f"0\t0\t0\t0\t0\t0\t")
-            line += ['0', '0', '0', '0', '0', '0']
+            #print(f"0\t0\t0\t0\t0\t0\t")
+            #line += ['0', '0', '0', '0', '0', '0']
+            line += [None, None, None, None, None, None]
 
         if new_line_counter_9 == 1:
             #print("orig 9 ok")
-            print(escape_newlines(f"{c9[1]}\t{c9[3]}\t{c9[4][0][1]}\t{c9[4][0][2]}\t{c9[4][1][1]}\t{c9[4][1][2]}"))
+            #print(escape_newlines(f"{c9[1]}\t{c9[3]}\t{c9[4][0][1]}\t{c9[4][0][2]}\t{c9[4][1][1]}\t{c9[4][1][2]}"))
             line += [c9[1], c9[3], c9[4][0][1], c9[4][0][2], c9[4][1][1], c9[4][1][2]]
         if new_line_counter_9 >= 2:
             #print("9 ok")
-            print(f"0\t0\t0\t0\t0\t0")
-            line += ['0', '0', '0', '0', '0', '0']
+            #print(f"0\t0\t0\t0\t0\t0")
+            #line += ['0', '0', '0', '0', '0', '0']
+            line += [None, None, None, None, None, None]
+
 
         lines.append(line)
 
@@ -128,9 +195,9 @@ def process_comp_probs(key, base, cd05, cd09):
     if cd09[key][1][0][1] != "\n":
         control_9 += 1
     lines = []
-    for b, c5, c9 in zip_longest(base[key][1],cd05[key][1], cd09[key][1], fillvalue=(0, "\n", 0, 0, [(0, "\n", 0), (0, "\n", 0)])):
-        print("control: ", control_b, control_5, control_9)
-        print("new line before: ", new_line_counter_b, new_line_counter_5, new_line_counter_9)
+    for b, c5, c9 in zip_longest(base[key][1],cd05[key][1], cd09[key][1], fillvalue=(None, "\n", None, None, [(None, "\n", None), (None, "\n", None)])):
+        #print("control: ", control_b, control_5, control_9)
+        #print("new line before: ", new_line_counter_b, new_line_counter_5, new_line_counter_9)
 
         if b[1] == "\n" or control_b == 1:
             if control_b == 1:
@@ -145,8 +212,8 @@ def process_comp_probs(key, base, cd05, cd09):
                 control_9 += 1
             new_line_counter_9 += 1
 
-        print("new_line after: ",new_line_counter_b, new_line_counter_5, new_line_counter_9)
-        line = []
+        #print("new_line after: ",new_line_counter_b, new_line_counter_5, new_line_counter_9)
+        line = [f'{key}']
 
         if new_line_counter_b >=2 and new_line_counter_9 >= 2 and new_line_counter_5 >=2:
             break
@@ -154,34 +221,39 @@ def process_comp_probs(key, base, cd05, cd09):
         if new_line_counter_b == 1:
             #print("orig b ok")
             #print: tok1_int \t tok1_txt \t tok1_% \t tok2_int \t tok2_txt \t tok2_% \t tok3_int \t tok3_txt \t tok3_%
-            print(escape_newlines(f"{b[0]}\t{b[1]}\t{b[3]}\t{b[4][0][0]}\t{b[4][0][1]}\t{b[4][0][2]}\t{b[4][1][0]}\t{b[4][1][1]}\t{b[4][1][2]}\t"))
+            #print(escape_newlines(f"{b[0]}\t{b[1]}\t{b[3]}\t{b[4][0][0]}\t{b[4][0][1]}\t{b[4][0][2]}\t{b[4][1][0]}\t{b[4][1][1]}\t{b[4][1][2]}\t"))
             line += [b[0], b[1], b[3], b[4][0][0], b[4][0][1], b[4][0][2], b[4][1][0], b[4][1][1], b[4][1][2]]
 
         if new_line_counter_b >= 2:
             #print("b ok")
-            print(f"\t\t\t\t\t\t\t\t\t")
-            line += ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+            #print(f"\t\t\t\t\t\t\t\t\t")
+            #line += ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+            line += [None, None, None, None, None, None, None, None, None]
 
         if new_line_counter_5 == 1:
             #print("orig 5 ok")
-            print(escape_newlines(f"{c5[0]}\t{c5[1]}\t{c5[3]}\t{c5[4][0][0]}\t{c5[4][0][1]}\t{c5[4][0][2]}\t{c5[4][1][0]}\t{c5[4][1][1]}\t{c5[4][1][2]}\t"))
+            #print(escape_newlines(f"{c5[0]}\t{c5[1]}\t{c5[3]}\t{c5[4][0][0]}\t{c5[4][0][1]}\t{c5[4][0][2]}\t{c5[4][1][0]}\t{c5[4][1][1]}\t{c5[4][1][2]}\t"))
             line += [c5[0], c5[1], c5[3], c5[4][0][0], c5[4][0][1], c5[4][0][2], c5[4][1][0], c5[4][1][1], c5[4][1][2]]
 
 
         if new_line_counter_5 >= 2:
             #print("5 ok")
-            print(f"\t\t\t\t\t\t\t\t\t")
-            line += ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+            #print(f"\t\t\t\t\t\t\t\t\t")
+            #line += ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+            line += [None, None, None, None, None, None, None, None, None]
+
 
         if new_line_counter_9 == 1:
             #print("orig 9 ok")
-            print(escape_newlines(f"{c9[0]}\t{c9[1]}\t{c9[3]}\t{c9[4][0][0]}\t{c9[4][0][1]}\t{c9[4][0][2]}\t{c9[4][1][0]}\t{c9[4][1][1]}\t{c9[4][1][2]}"))
+            #print(escape_newlines(f"{c9[0]}\t{c9[1]}\t{c9[3]}\t{c9[4][0][0]}\t{c9[4][0][1]}\t{c9[4][0][2]}\t{c9[4][1][0]}\t{c9[4][1][1]}\t{c9[4][1][2]}"))
             line += [c9[0], c9[1], c9[3], c9[4][0][0], c9[4][0][1], c9[4][0][2], c9[4][1][0], c9[4][1][1], c9[4][1][2]]
 
         if new_line_counter_9 >= 2:
             #print("9 ok")
-            print(f"\t\t\t\t\t\t\t\t\t")
-            line += ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+            #print(f"\t\t\t\t\t\t\t\t\t")
+            #line += ['0', '0', '0', '0', '0', '0', '0', '0', '0']
+            line += [None, None, None, None, None, None, None, None, None]
+
 
 
         lines.append(line)
@@ -200,15 +272,108 @@ def main(args):
             cd_ger_data = json.load(cd_ger)
         with open(args.cd_english_file, 'r', encoding="utf-8") as cd_en:
             cd_en_data = json.load(cd_en)
+            print(cd_en)
         if args.sentences:
-            for key in args.sentences:
-                value = cd_data[key]
-                sentence_probs = process_probs(key,value,cd_ger_data,cd_en_data)
-                print(sentence_probs)
+
+            with open(f"prob{args.language_weight}_comp_table_redu_{args.filter}.csv", "w", encoding="utf-8") as file:
+                w = ""
+                c = ""
+                if args.language_weight == 0.9:
+                    w = "cd9"
+                    c = "09"
+                if args.language_weight == 0.5:
+                    w = "cd5"
+                    c = "05"
+
+                writer = csv.writer(file, delimiter='\t')
+                writer.writerow([f'Filter {args.filter} for {args.language_weight} including top 3 most probable tokens at each generation step'])
+                writer.writerow(['', f'CD:{c}', '', '', '', '', '', 'CD:Ger', '', '', '', '', '', 'CD:En', '', '', '', '', ''])
+                writer.writerow(
+                    ['Idx', f'tok1_{w}', f'tok1_{w}%', f'tok2_{w}', f'tok2_{w}%', f'tok3_{w}', f'tok3_{w}%', 'tok1_ger', 'tok1_ger%',
+                     'tok2_ger', 'tok2_ger%', 'tok3_ger', 'tok3_ger%', 'tok1_en', 'tok1_en%', 'tok2_en', 'tok2_en%', 'tok3_en',
+                     'tok3_en%'])
+
+                for key in args.sentences:
+                    value = cd_data[key]
+                    comp_probs = process_probs_redu(key,value,cd_ger_data,cd_en_data)
+                    writer.writerows(comp_probs)
+                    print(cd_en_data["956"][1][18])
+                    print(cd_ger_data["956"][1][18])
+                    print(w)
+
+            with open(f"prob{args.language_weight}_comp_table_{args.filter}.csv", "w", encoding="utf-8") as file:
+                w = ""
+                c = ""
+                if args.language_weight == 0.9:
+                    w = "cd9"
+                    c = "09"
+                if args.language_weight == 0.5:
+                    w = "cd5"
+                    c = "05"
+
+                writer = csv.writer(file, delimiter='\t')
+                writer.writerow([f'Filter {args.filter} for {args.language_weight} including top 3 most probable tokens at each generation step'])
+                writer.writerow(
+                    ['', f'CD:{c}', '','', '', '', '', '','', '', 'CD:Ger', '','','','', '', '', '', '', 'CD:En'])
+                writer.writerow(
+                    ['Idx', f'tok1_int_{w}',f'tok1_{w}', f'tok1_{w}%', f'tok2_int_{w}',f'tok2_{w}', f'tok2_{w}%', f'tok3_int_{w}',f'tok3_{w}', f'tok3_{w}%',
+                     'tok1_int_ger','tok1_ger', 'tok1_ger%', 'tok2_int_ger','tok2_ger', 'tok2_ger%', 'tok3_int_ger','tok3_ger', 'tok3_ger%',
+                     'tok1_int_en','tok1_en', 'tok1_en%', 'tok2_int_en','tok2_en', 'tok2_en%', 'tok3_int_en','tok3_en', 'tok3_en%'])
+                for key in args.sentences:
+                    value = cd_data[key]
+                    comp_probs = process_probs(key, value, cd_ger_data, cd_en_data)
+                    writer.writerows(comp_probs)
+
         else:
-            for key, value in cd_data.items():
-                sentence_probs = process_probs(key,value,cd_ger_data,cd_en_data)
-                print(sentence_probs)
+            with open(f"all_prob{args.language_weight}_comp_table_redu_{args.filter}.csv", "w", encoding="utf-8") as file:
+                w = ""
+                c = ""
+                if args.language_weight == 0.9:
+                    w = "cd9"
+                    c = "09"
+                if args.language_weight == 0.5:
+                    w = "cd5"
+                    c = "05"
+
+                writer = csv.writer(file, delimiter='\t')
+                writer.writerow([f'Filter {args.filter} for {args.language_weight} including top 3 most probable tokens at each generation step'])
+                writer.writerow(['', f'CD:{c}', '', '', '', '', '', 'CD:Ger', '', '', '', '', '', 'CD:En', '', '', '', '', ''])
+                writer.writerow(
+                    ['Idx', f'tok1_{w}', f'tok1_{w}%', f'tok2_{w}', f'tok2_{w}%', f'tok3_{w}', f'tok3_{w}%', 'tok1_ger', 'tok1_ger%',
+                     'tok2_ger', 'tok2_ger%', 'tok3_ger', 'tok3_ger%', 'tok1_en', 'tok1_en%', 'tok2_en', 'tok2_en%', 'tok3_en',
+                     'tok3_en%'])
+
+                for key, value in cd_data.items():
+                    all_probs = process_probs_redu(key,value,cd_ger_data,cd_en_data)
+                    writer.writerows(all_probs)
+
+            with open(f"all_prob{args.language_weight}_comp_table_{args.filter}.csv", "w", encoding="utf-8") as file:
+                w = ""
+                c = ""
+                if args.language_weight == 0.9:
+                    w = "cd9"
+                    c = "09"
+                if args.language_weight == 0.5:
+                    w = "cd5"
+                    c = "05"
+
+                writer = csv.writer(file, delimiter='\t')
+                writer.writerow([f'Filter {args.filter} for {args.language_weight} including top 3 most probable tokens at each generation step'])
+                writer.writerow(['', f'CD:{c}', '', '', '', '', '', '','', '', 'CD:Ger', '', '', '', '', '', '','', '', 'CD:En'])
+                writer.writerow(['Idx', f'tok1_int_{w}', f'tok1_{w}', f'tok1_{w}%', f'tok2_int_{w}', f'tok2_{w}',
+                             f'tok2_{w}%', f'tok3_int_{w}', f'tok3_{w}', f'tok3_{w}%',
+                             'tok1_int_ger', 'tok1_ger', 'tok1_ger%', 'tok2_int_ger', 'tok2_ger', 'tok2_ger%',
+                             'tok3_int_ger', 'tok3_ger', 'tok3_ger%',
+                             'tok1_int_en', 'tok1_en', 'tok1_en%', 'tok2_int_en', 'tok2_en', 'tok2_en%',
+                             'tok3_int_en','tok3_en', 'tok3_en%'])
+                for key, value in cd_data.items():
+                    all_probs = process_probs(key,value,cd_ger_data,cd_en_data)
+                    writer.writerows(all_probs)
+
+
+
+
+                    #print(all_probs)
 
     if args.base_file and args.cd05_file and args.cd09_file:
 
@@ -242,41 +407,54 @@ def main(args):
                 print(line)
 
 
-            with open("prob_comp_table.csv", "w", encoding="utf-8") as file:
+            with open(f"prob_comp_table_{args.filter}_full.csv", "w", encoding="utf-8") as file:
                 writer = csv.writer(file, delimiter='\t')
-                writer.writerow(["Filter including top 3 most probable tokens at each generation step"])
-                writer.writerow(["Baseline",'', '', '', '', '', '', '', '', '',"CD:05",'', '', '', '', '', '', '', '', '',"CD:09"])
-                for key in args.sentences:
-                    writer.writerow([f'Idx: {key}','', '', '', '', '', '', '', '', f'Idx: {key}', '', '', '', '', '', '', '', '', f'Idx: {key}'])
+                writer.writerow([f"Filter {args.filter} including top 3 most probable tokens at each generation step"])
+                writer.writerow(['', 'Baseline', '', '', '', '', '', '', '', '', 'CD:05', '', '', '', '', '', '', '', '',
+                     'CD:09'])
 
-                    writer.writerow(['tok1_int', 'tok1_txt', 'tok1_%',
-                                'tok2_int', 'tok2_txt', 'tok2_%',
-                                'tok3_int', 'tok3_txt', 'tok3_%',
-                                'tok1_int', 'tok1_txt', 'tok1_%',
-                                'tok2_int', 'tok2_txt', 'tok2_%',
-                                'tok3_int', 'tok3_txt', 'tok3_%',
-                                'tok1_int', 'tok1_txt', 'tok1_%',
-                                'tok2_int', 'tok2_txt', 'tok2_%',
-                                'tok3_int', 'tok3_txt', 'tok3_%'])
+                writer.writerow(
+                    ['Idx', 'tok1_int_b', 'tok1_b', 'tok1_b%', 'tok2_int_b', 'tok2_b', 'tok2_b%', 'tok3_int_b',
+                     'tok3_b', 'tok3_b%',
+                     'tok1_int_cd5', 'tok1_cd5', 'tok1_cd5%', 'tok2_int_cd5', 'tok2_cd5', 'tok2_cd5%', 'tok3_int_cd5',
+                     'tok3_cd5', 'tok3_cd5%',
+                     'tok1_int_cd9', 'tok1_cd9', 'tok1_cd9%', 'tok2_int_cd9', 'tok2_cd9', 'tok2_cd9%', 'tok3_int_cd9',
+                     'tok3_cd9', 'tok3_cd9%'])
+
+                for key in args.sentences:
                     comp_probs = process_comp_probs(key, base_sent, CD_05_sent, CD_09_sent)
                     writer.writerows(comp_probs)
 
 
-            with open("prob_comp_table_redu.csv", "w", encoding="utf-8") as file:
+            with open(f"prob_comp_table_redu_{args.filter}_full.csv", "w", encoding="utf-8") as file:
                 writer = csv.writer(file, delimiter='\t')
-                writer.writerow(['Filter including top 3 most probable tokens at each generation step'])
-                writer.writerow(['Baseline', '', '', '', '', '', 'CD:05', '', '', '', '', '', 'CD:09', '', '', '', '', ''])
-                for key in args.sentences:
-                    writer.writerow([f'Idx: {key}','','','','','',f'Idx: {key}','','','','','',f'Idx: {key}','','','','',''])
-                    writer.writerow(['tok1_txt', 'tok1_%', 'tok2_txt', 'tok2_%', 'tok3_txt', 'tok3_%', 'tok1_txt', 'tok1_%t', 'tok2_txt', 'tok2_%', 'tok3_txt', 'tok3_%', 'tok1_txt', 'tok1_%', 'tok2_txt', 'tok2_%', 'tok3_txt', 'tok3_%'])
+                writer.writerow([f'Filter {args.filter} including top 3 most probable tokens at each generation step'])
+                writer.writerow(['','Baseline', '', '', '', '', '', 'CD:05', '', '', '', '', '', 'CD:09', '', '', '', '', ''])
+                writer.writerow(
+                    ['Idx', 'tok1_b', 'tok1_b%', 'tok2_b', 'tok2_b%', 'tok3_b', 'tok3_b%', 'tok1_cd5', 'tok1_cd5%',
+                     'tok2_cd5', 'tok2_cd5%', 'tok3_cd5', 'tok3_cd5%', 'tok1_cd9', 'tok1_cd9%', 'tok2_cd9', 'tok2_cd9%', 'tok3_cd9',
+                     'tok3_cd9%'])
 
+                for key in args.sentences:
                     comp_probs = process_comp_probs_reduced(key, base_sent, CD_05_sent, CD_09_sent)
                     writer.writerows(comp_probs)
 
 
 
         else:
-            print("You need to add a space seperated list of sentences you want to inspect (--sentences)")
+            with open(f"all_prob_comp_table_{args.filter}.csv", "w", encoding="utf-8") as file:
+                writer = csv.writer(file, delimiter='\t')
+                writer.writerow([f'Filter {args.filter} including top 3 most probable tokens at each generation step'])
+                writer.writerow(['','Baseline', '', '','', '', '', '', '','', 'CD:05', '', '', '', '','', '', '', '', '','', 'CD:09'])
+                writer.writerow(
+                    ['Idx', 'tok1_int_b','tok1_b', 'tok1_b%', 'tok2_int_b','tok2_b', 'tok2_b%', 'tok3_int_b','tok3_b', 'tok3_b%',
+                     'tok1_int_cd5', 'tok1_cd5', 'tok1_cd5%', 'tok2_int_cd5','tok2_cd5', 'tok2_cd5%', 'tok3_int_cd5', 'tok3_cd5', 'tok3_cd5%',
+                     'tok1_int_cd9', 'tok1_cd9', 'tok1_cd9%', 'tok2_int_cd9', 'tok2_cd9', 'tok2_cd9%', 'tok3_int_cd9','tok3_cd9', 'tok3_cd9%'])
+
+                for key, value in base_sent.items():
+                    comp_probs = process_comp_probs(key, base_sent, CD_05_sent, CD_09_sent)
+                    writer.writerows(comp_probs)
+
     else:
         print("You need to add a file path to Baseline, and 0.5 and 0.9 CD translations using the corresponding Command Line Argument.")
 
@@ -309,5 +487,7 @@ if __name__ == "__main__":
                         help="Enter 3 translation files seperated by spaces. (E.g: Path/to/baseline.txt Path/to/CD_0.5.txt Path/to/CD0.9.txt")
     parser.add_argument("--sentences", type=str, nargs="+",
                         help="Optional argument, enter (space seperated) list of integers to represent the sentences you want to look at specifically.")
+    parser.add_argument("--filter", type=str, default="None",
+                        help="personalise your output and header by adding descriptor word to your output file.")
     args = parser.parse_args()
     main(args)

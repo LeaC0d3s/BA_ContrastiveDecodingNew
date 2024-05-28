@@ -1,16 +1,16 @@
 import fasttext
 from huggingface_hub import hf_hub_download
-with open("out/flores/en-de/topk3/contrastive-None--0.1-topk3-lang-en--0.5.en-de.txt", "r") as CD_05:
+with open("out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.en-de.txt", "r") as CD_05:
     CD_05_sent = CD_05.readlines()
-with open("out/flores/en-de/topk3/contrastive-None--0.1-topk3-lang-en--0.9.en-de.txt", "r") as CD_09:
+with open("out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.en-de.txt", "r") as CD_09:
     CD_09_sent = CD_09.readlines()
-with open("out/flores/en-de/topk3/direct-topk3.en-de.txt", "r") as base:
+with open("out/flores/en-de/topk3_final/final-baseline-topk3.en-de.txt", "r") as base:
     base_sent = base.readlines()
 with open("de.txt", "r") as ref:
     ref_sent = ref.readlines()
 
 model2 = fasttext.load_model(hf_hub_download("laurievb/OpenLID", "model.bin"))
-model1 = fasttext.load_model(hf_hub_download("facebook/fasttext-language-identification", "model.bin"))
+#model1 = fasttext.load_model(hf_hub_download("facebook/fasttext-language-identification", "model.bin"))
 off_targ_base = []
 off_targ_05 = []
 off_targ_09 = []

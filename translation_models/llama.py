@@ -157,8 +157,7 @@ class LLaMaTranslationModel(TranslationModel):
                 normalized = torch.nn.functional.softmax(greedy_score, dim=1)
                 normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
                 normalized_top_values = normalized.topk(3, dim=1).values[0]
-                # print(normalized.topk(3, dim=1))
-                # print("new token probs:")
+
                 top_2_tok = normalized_top_tokens[1]
                 top_3_tok = normalized_top_tokens[2]
                 top_2_val = normalized_top_values[1]
@@ -176,16 +175,7 @@ class LLaMaTranslationModel(TranslationModel):
                                    float(np.round(score.cpu().numpy(), decimals=4)),
                                    f"{np.exp(score.cpu().numpy()):.2%}", runner_ups))
 
-            """
-            save_prob = []
-            for tok, score in zip(generated_tokens, transition_scores[0]):
-                logging.info(
-                    f"| {tok:5d} | {self.tokenizer.decode(tok):8s} | {score.cpu().numpy():.4f} | {np.exp(score.cpu().numpy()):.2%}")
 
-                save_prob.append((int(tok.cpu()), self.tokenizer.decode(tok.cpu()),
-                                   float(np.round(score.cpu().numpy(), decimals=4)),
-                                   f"{np.exp(score.cpu().numpy()):.2%}"))
-            """
 
             gen_seq = decoded_output[0]['generated_text']
             #logging.info(gen_seq)
@@ -222,20 +212,18 @@ class LLaMaTranslationModel(TranslationModel):
         )
 
         return output
+
     def get_runner_ups(self, greedy_score):
 
         normalized = torch.nn.functional.softmax(greedy_score, dim=1)
         normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
         normalized_top_values = normalized.topk(3, dim=1).values[0]
-        # print(normalized.topk(3, dim=1))
-        #print("new token probs:")
         top_2_tok = normalized_top_tokens[1]
         top_3_tok = normalized_top_tokens[2]
         top_2_val = normalized_top_values[1]
         top_3_val = normalized_top_values[2]
         runner_ups = [[int(top_2_tok.cpu()), self.tokenizer.decode(top_2_tok.cpu()), f"{top_2_val.cpu():.2%}"],
                            [int(top_3_tok.cpu()), self.tokenizer.decode(top_3_tok.cpu()), f"{top_3_val.cpu():.2%}"]]
-
         return runner_ups
 
     def _translate_multi_source(self,
@@ -334,16 +322,10 @@ class LLaMaTranslationModel(TranslationModel):
             **kwargs,
         )
 
-
         output = outputs.sequences.reshape(1, outputs.sequences.shape[0], *outputs.sequences.shape[1:])
 
-
-
         first_input_id = input_ids[0]
-        #second_input_id = input_ids[1]
-
         input_length = first_input_id.shape[0]
-        #input_length_orig_en = second_input_id.shape[0]
 
         cd_tokens = outputs.sequences[0][input_length:]
         fixed_decoding_de = []
@@ -409,8 +391,6 @@ class LLaMaTranslationModel(TranslationModel):
             normalized = torch.nn.functional.softmax(greedy_score, dim=1)
             normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
             normalized_top_values = normalized.topk(3, dim=1).values[0]
-            # print(normalized.topk(3, dim=1))
-            #print("new token probs:")
             top_2_tok = normalized_top_tokens[1]
             top_3_tok = normalized_top_tokens[2]
             top_2_val = normalized_top_values[1]
