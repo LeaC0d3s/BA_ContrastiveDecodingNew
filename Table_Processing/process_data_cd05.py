@@ -8,7 +8,7 @@ file_path = 'prob0.5_comp_table_all_final.xlsx'  # Replace with your actual file
 xls = pd.ExcelFile(file_path)
 
 # Read the 'Blatt A - prob_comp_table_A_ful' table from row 2
-table_a = pd.read_excel(xls, 'Blatt G - prob0.5_comp_table_G', header=2)
+table_a = pd.read_excel(xls, 'Blatt C - prob0.5_comp_table_C', header=2)
 
 table_a.columns = [
         'Idx', 'tok1_int_cd5', 'tok1_cd5', 'tok1_cd5%', 'tok2_int_cd5', 'tok2_cd5', 'tok2_cd5%', 'tok3_int_cd5',
@@ -135,9 +135,9 @@ for name, group in grouped:
 
 
 # Create an Excel file and insert the images into the sheet
-excel_file = 'Filter_CD05_G.xlsx'
+excel_file = 'Filter_CD05_C.xlsx'
 workbook = xlsxwriter.Workbook(excel_file)
-worksheet = workbook.add_worksheet('Filter CD05 G')
+worksheet = workbook.add_worksheet('Filter CD05 C')
 
 # Insert images into the sheet
 row = 0
