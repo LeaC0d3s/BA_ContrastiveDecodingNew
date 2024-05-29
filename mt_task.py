@@ -41,11 +41,7 @@ class MTTask:
         #source_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.src_lang])['devtest']['sentence']
 
         # Define the path to your local text file
-        #file_path = "en_selected_sents.txt" #special cases 36 samples
         file_path = "en.txt"  # total sentences
-        #file_path = "en_selected_two.txt"
-        # Load the dataset from the text file
-        #source_sentences = load_dataset("text", data_files=file_path)["train"]["text"]
 
         # Open the file and read its contents
         with open(file_path, "r", encoding="utf-8") as file:
@@ -143,8 +139,6 @@ class MTTask:
 
         if not os.path.isfile(str(self.out_dir)+"/"+"all_ref.text"):
             file_path = "de.txt"
-            #file_path = "de_selected_ref.txt"
-            #file_path = "de_selected_ref_two.txt"
             #target_sentences = load_dataset("text", data_files=file_path,cache_dir=None)["train"]["text"]
             #target_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.tgt_lang])['devtest']['sentence']
 

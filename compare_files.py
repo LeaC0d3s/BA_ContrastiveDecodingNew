@@ -1,9 +1,9 @@
 file1_path = "predictions/llama_flores/en-de/Llama-2-13b-chat-1shot-baseline.de"
-file1_path = "predictions/llama_flores/en-de/Llama-2-13b-chat-1shot-contrastive-en-0.5.de"
-file1_path = "predictions/llama_flores/en-de/Llama-2-13b-chat-1shot-contrastive-en-0.9.de"
+#file1_path = "predictions/llama_flores/en-de/Llama-2-13b-chat-1shot-contrastive-en-0.5.de"
+#file1_path = "predictions/llama_flores/en-de/Llama-2-13b-chat-1shot-contrastive-en-0.9.de"
 file2_path = "out/flores/en-de/topk3_final/final-baseline-topk3.en-de.txt"
-file2_path = "out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.en-de.txt"
-file2_path = "out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.en-de.txt"
+#file2_path = "out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.en-de.txt"
+#file2_path = "out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.en-de.txt"
 
 count=0
 with open(file1_path, "r") as file1, open(file2_path, "r") as file2:
