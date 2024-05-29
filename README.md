@@ -26,23 +26,7 @@ For my thesis I only used the **language-contrastive decoding** part of their im
 !Note: The `transformers`library was upgraded from the original version `==4.33.1` to `==4.38.2` as there were some conflicts with my working environement.
 - `pip install -r requirements.txt
 
-
-## Structure of the Repsitory
-
-
-
-## Code Adaptions from Original Repository
-- **mt_task.py**: 1: Local access of source and reference data, instead of directly accessing the datasets via hugging face. 2: Adjusting the return variable of the `evaluate` function, including the dictionary with the probabilities for both Baseline and CD translation. 3: writing the translations and the probability dictionaries into output files.
-- **translation_models/\_\_init\_\_.py**: rewriting an assert statement for the `translate` function, as I changed the format of the output to accomodate the probability dictionary.
-- **translation_models/llama.py**: functions I adapted: `_translate`, `_translate_multi_source`. Functions I added: `generate_step_by_step`--> calls the German/English prompted model to generate the next token based on the previous tokens produced during CD, `get_runner_ups`--> There are different variations of this code block through multiple functions to accomodate different input formats, but in general they all work similar to this when extracting the second and third most probable token at each generation step, using the normalized scores for probabilities over all possible tokens.
-
-## Scripts for Processing Translations and Probabilities
-
-
-
-## Usage
-
-**Example commands**
+**Commands used for Reproducing the Outputs and Extracting Probabilities**
  
 Baseline with [Llama 2 Chat (13B)](https://arxiv.org/abs/2307.09288) on English–German, using prompting with a one-shot example:
 - `python -m scripts.run --model_path llama-2-13b-chat --language_pairs en-de  --oneshot`
@@ -54,21 +38,27 @@ Language-contrastive decoding with [Llama 2 Chat (13B)](https://arxiv.org/abs/23
 - `python -m scripts.run --model_path llama-2-13b-chat --language_pairs en-de --language_contrastive en  --language_weight -0.9 --oneshot`
 
 In addition to the .txt files containing the translations, this repository also produces 3 json files, containing:
-- A dictionary containing the top 3 most probable tokens at each generation step of the decoding.
-- A dictionary containing the top 3 most probable German tokens given the previous generated CD tokens.
-- A dictionary containing the top 3 most probable English tokens given the previous generated CD tokens.
-
-
+- A dictionary with the top 3 most probable tokens at each generation step during decoding (Baseline, λ_lang=0.5 and λ_lang=0.9).
+- A dictionary with the top 3 most probable German tokens given the previous generated CD tokens at each step of decoding (λ_lang=0.5 and λ_lang=0.9).
+- A dictionary with the top 3 most probable English tokens given the previous generated CD tokens at each step of decoding (λ_lang=0.5 and λ_lang=0.9).
 
 ## Dataset and Models:
 
-This repository automatically opens and uses the pre-downloaded ```devtest``` sentences for English and German from the [FLORES-101](https://huggingface.co/datasets/gsarti/flores_101) dataset.
-- ```de.txt```
-- ```en.txt```
+This repository automatically opens and uses the pre-downloaded ```devtest``` sentences for English and German from the [FLORES-101](https://huggingface.co/datasets/gsarti/flores_101) dataset when the above command line arguments are run.
+- ```de.txt``` The file containing the German references
+- ```en.txt``` The file containing the English source sentences
 
-Multiple models are implemented:
 
-- [Llama 2 7B Chat](https://huggingface.co/meta-llama). Use `--model_path llama-2-7b-chat` or `llama-2-13b-chat`
+## Code Adaptions from Original Repository
+- **mt_task.py**: 1: Local access of source and reference data, instead of directly accessing the datasets via hugging face. 2: Adjusting the return variable of the `evaluate` function, including the dictionary with the probabilities for both Baseline and CD translation. 3: writing the translations and the probability dictionaries into output files.
+- **translation_models/\_\_init\_\_.py**: rewriting an assert statement for the `translate` function, as I changed the format of the output to accomodate the probability dictionary.
+- **translation_models/llama.py**: functions I adapted: `_translate`, `_translate_multi_source`. Functions I added: `generate_step_by_step`--> calls the German/English prompted model to generate the next token based on the previous tokens produced during CD, `get_runner_ups`--> There are different variations of this code block through multiple functions to accomodate different input formats, but in general they all work similar to this when extracting the second and third most probable token at each generation step, using the normalized scores for probabilities over all possible tokens.
+
+
+## Additional Scripts for Processing Translations and Probabilities
+
+
+
 
 
 ## Evaluation
