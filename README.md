@@ -8,7 +8,7 @@
 </p>
 
 This repository is for my bachelor thesis. It contains all the code I used for reproducing the outputs for my evaluations as well as all the scrips I wrote in addition to process the obtained data. This README provides an overview of all the files and folder and how to use them.
-This repository is forked and adapted from the original creator: source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098).
+This repository is forked and adapted from the original creator: source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098):
 
 - In **source-contrastive decoding**, we search for a translation that maximizes P(_Y_|_X_) - λ·P(_Y_|_X'_), where _X'_ is a random source segment. This penalizes hallucinations.
 
@@ -34,7 +34,11 @@ For my thesis I only used the **language-contrastive decoding** part of their im
 ## Code Adaptions from Original Repository
 - **mt_task.py**: 1: Local access of source and reference data, instead of directly accessing the datasets via hugging face. 2: Adjusting the return variable of the `evaluate` function, including the dictionary with the probabilities for both Baseline and CD translation. 3: writing the translations and the probability dictionaries into output files.
 - **translation_models/\_\_init\_\_.py**: rewriting an assert statement for the `translate` function, as I changed the format of the output to accomodate the probability dictionary.
-- **translation_models/llama.py**: functions I adapted: `_translate`, `_translate_multi_source`. Functions I added: `generate_step_by_step`--> calls the German/English prompted model to generate the next token based on the previous tokens produced during CD, `get_runner_ups`--> There are different variations of this code block through multiple functions to accomodate different input formats, but in general they all work similar to this when extracting the second and third most probable token at each generation step, including the normalized scores for probabilities over all possible tokens.
+- **translation_models/llama.py**: functions I adapted: `_translate`, `_translate_multi_source`. Functions I added: `generate_step_by_step`--> calls the German/English prompted model to generate the next token based on the previous tokens produced during CD, `get_runner_ups`--> There are different variations of this code block through multiple functions to accomodate different input formats, but in general they all work similar to this when extracting the second and third most probable token at each generation step, using the normalized scores for probabilities over all possible tokens.
+
+## Scripts for Processing Translations and Probabilities
+
+
 
 ## Usage
 
