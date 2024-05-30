@@ -11,7 +11,9 @@ Author: Lea Müller
 </p>
 
 This repository is for my bachelor thesis. It contains all the code I used for reproducing the outputs for my evaluations as well as all the scrips I wrote in addition to process the obtained data. This README provides an overview of all the files and folder and how to use them.
-This repository is forked and adapted from the original creator: source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098):
+This repository was initially forked from the original creator and adapted for my own research goals.
+
+Source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098):
 
 - In **source-contrastive decoding**, we search for a translation that maximizes P(_Y_|_X_) - λ·P(_Y_|_X'_), where _X'_ is a random source segment. This penalizes hallucinations.
 
@@ -21,7 +23,7 @@ This repository is forked and adapted from the original creator: source-contrast
 <img src="illustration.png" alt="Our decoding objective yields a translation that is probable given the actual input, but improbable given a source-contrastive or language-contrastive input." width="400">
 </p>
 
-For my thesis I only used the **language-contrastive decoding** part of their implementation.
+For my thesis I only used the **language-contrastive decoding** on the LLM part of their implementation.
 
 
 ## Installation
