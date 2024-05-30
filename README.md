@@ -69,8 +69,11 @@ This repository automatically opens and uses the pre-downloaded ```devtest``` se
 
 ## Additional Scripts for Processing Translations and Probabilities
 Here is a list of scripts I put together to process my obtained data:
+
 `compare_files.py`:
   - This script compares the original translation output with the reproduced translations and return all the affected lines, including a total count of the lines that are different.
+
+
 `compare_probs.py`:
   - This scribt takes two different comman line arguments, where one retuns table containing the Baseline, λ_lang=0.5 and λ_lang=0.9 top 3 probabilities:
       - `python3 -m compare_probs --base_file out/flores/en-de/topk3_final/final-baseline-topk3.en-de.json --cd05_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_CD.json --cd09_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_CD.json --sentences 90 281 490 533 679 863 873 875 --filter A`
