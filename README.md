@@ -1,4 +1,7 @@
-# Contrastive Decoding
+# Bachelor Thesis Repository
+## Off-Target Translations in Large Language Models: A Deep Dive into Language-Contrastive Decoding Outputs and Generated Token Probabilities
+Author: Lea Müller
+
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-red.svg)](#python)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
