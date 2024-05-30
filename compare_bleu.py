@@ -93,11 +93,12 @@ for i,f in enumerate(fs):
 #fe = [2, 3, 79, 133, 134, 154, 173, 196, 245, 268, 281, 296, 311, 375, 422, 484, 494, 558, 559, 629, 655, 740, 754, 871, 877, 889, 891, 934]
 #ff = [217, 444, 702]
 #fg = [41, 121, 192, 210, 260, 270, 306, 365, 387, 450, 469, 550, 614, 772, 851, 893, 986]
-custom = [990,998,1001,1008,1010]
+
+# custom = [990,998,1001,1008,1010] # sentence indexes of translations that differ from Sennrich et al.'s translations
 
 worse = sorted(d[0], key= lambda x: comparison(x,d[0],d[1]), reverse=True)
 # Replace "worse" with a custom list of indexes.
-for entry in custom:
+for entry in worse:
     if len(refs[entry].split()) > max_size:
         continue
     print(entry)
