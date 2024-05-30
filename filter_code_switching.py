@@ -64,9 +64,9 @@ for idx, trio in enumerate(zip(base_sent, CD_05_sent, CD_09_sent, ref_sent)):
             off_targ_09.append(idx)
 
 
-print(off_targ_base)
-print(off_targ_05)
-print(off_targ_09)
+print(off_targ_base, len(off_targ_base))
+print(off_targ_05, len(off_targ_05))
+print(off_targ_09, len(off_targ_09))
 # The threshold for German prediction should be set so that this list of Off-Target references returns empty: e.g.
 print("Should be 0", off_targ_ref)
 
@@ -94,4 +94,7 @@ print(f"Common Sentences that fail the Language Identification Test in all 3 Set
       f"\nOnly Sentences that fail the Language Identification Test in 0.5 CD: {' '.join(map(str, only_05_fails))},"
       f"\nOnlySentences that fail the Language Identification Test in 0.9 CD: {' '.join(map(str, only_09_fails))},"
       f"\nOff Target Detected from Reference file: {off_targ_ref}")
+print(len(all_3_fails) +len(common_base_05) + len(common_base_09) + len(common_05_09) +len(only_base_fails) + len(only_05_fails) +len(only_09_fails))
+print(len(all_3_fails) ,len(common_base_05) ,len(common_base_09) , len(common_05_09) ,len(only_base_fails) , len(only_05_fails) ,len(only_09_fails))
+
 
