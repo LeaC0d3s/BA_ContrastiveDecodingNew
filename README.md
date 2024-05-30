@@ -106,7 +106,11 @@ Here is a short description of the scripts used for processing the obtained prob
 `Table_Processing/process_data_cd09.py`:
 -  This script is used for producing the individual Line Charts for a λ_lang=0.9 translation including a scatter plot showing the top 3 most probable token probabilities of German and English at each step, see "Table_Processing/plots_cd09". The German and English datapoints are only explicitly labled when they produce the same value as the top token in the CD top choice.
 
-In folder "Table_Processing/CD_05_09_Charts" I saved the plotted output, sorted in the Filter A-G, with λ_lang=0.5 and λ_lang=0.9 plots in direct comparison.
+-  In folder "Table_Processing/CD_05_09_Charts" I saved the plotted output, sorted in the Filter A-G, with λ_lang=0.5 and λ_lang=0.9 plots in direct comparison.
+
+`Table_Processing/average_prob_trend.py`:
+- This script takes the average token probability of a specific set of translations, containing some type of off-target error. Sentence length of the translations get normalized and produce together with the Baseline, λ_lang=0.5 and λ_lang=0.9 a trend chart. This is repeated for Non Translation, Partial Translation, translation with the remaining error types (excluding: Other) and once for the tanslations that contained no assigned off-target translation error from the extracted indexes during the language identification filtering.
+- The Plotted trend Charts are in folder "Table_Processing/Error_Trends".
 
 
 ## Evaluation of Reproduced Translation
