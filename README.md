@@ -93,10 +93,23 @@ ne--0.1-final-topk3-lang-en--0.9.probs_en_with_fixed_incremental_cd.json --sente
           - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: Table_Processing/prob0.9_comp_table_all_final.xlsx
 
 
+## Processing Table Data for Evaluation: Plotting Charts
+
+Here is a short description of the scripts used for processing the obtained probabilities:
+
+`Table_Processing/process_data.py`:
+-  This script is used for producing the individual Line Charts in the "Table_Processing/plots" as well as collecting the all indexes from Filter A-G in seperate files, saved in "Table_Processing/Base_05_09_Charts". The datapoints in this chart that have a token probability below 90% are explicitly labled.
+
+`Table_Processing/process_data_cd05.py`:
+-  This script is used for producing the individual Line Charts for a λ_lang=0.5 translation including a scatter plot showing the top 3 most probable token probabilities of German and English at each step, see "Table_Processing/plots_cd05". Tthe German and English datapoints are only labled when they produce the same value as the top token in the CD top choice.
+
+`Table_Processing/process_data_cd09.py`:
+-  This script is used for producing the individual Line Charts for a λ_lang=0.9 translation including a scatter plot showing the top 3 most probable token probabilities of German and English at each step, see "Table_Processing/plots_cd09". The German and English datapoints are only explicitly labled when they produce the same value as the top token in the CD top choice.
+
+In folder "Table_Processing/CD_05_09_Charts" I saved the plotted output, sorted in the Filter A-G, with λ_lang=0.5 and λ_lang=0.9 plots in direct comparison.
 
 
-
-## Evaluation
+## Evaluation of Reproduced Translation
 
 ChrF2:
 ```
