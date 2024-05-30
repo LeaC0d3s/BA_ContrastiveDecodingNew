@@ -54,7 +54,7 @@ In addition to the .txt files containing the translations, this repository also 
   - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_en_with_fixed_incremental_cd.json
   - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_en_with_fixed_incremental_cd.json
 
-## Dataset and Models:
+## Pre-Downloaded Source and Reference Sentences for EN-DE:
 
 This repository automatically opens and uses the pre-downloaded ```devtest``` sentences for English and German from the [FLORES-101](https://huggingface.co/datasets/gsarti/flores_101) dataset when the above command line arguments are run.
 - ```de.txt``` The file containing the German references
@@ -68,6 +68,26 @@ This repository automatically opens and uses the pre-downloaded ```devtest``` se
 
 
 ## Additional Scripts for Processing Translations and Probabilities
+Here is a list of scripts I put together to process my obtained data:
+-  compare_files.py
+  - This script compares the original translation output with the reproduced translations and return all the affected lines, including a total count of the lines that are different.
+-  compare_probs.py
+  - This scribt takes two different comman line arguments, where one retuns table containing the Baseline, λ_lang=0.5 and λ_lang=0.9 top 3 probabilities:
+      - `python3 -m compare_probs --base_file out/flores/en-de/topk3_final/final-baseline-topk3.en-de.json --cd05_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_CD.json --cd09_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_CD.json --sentences 90 281 490 533 679 863 873 875 --filter A`
+          - If `--sentences` are specified, you can add the `--filter` argument to name the selected sentences you want to save in a table. Otherwise, it will take the whole dictionary with all 1012 sentences as input.
+          - Here you can find the excel sheet, containing the table all the transaltions: --> Table_Processing/all_prob_comp_table_None.xlsx
+          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes: --> Table_Processing/prob_comp_table_full.xlsx
+       
+
+  - The second command line argument retuns tables containing a CD output, combined with the German and English token probabilities before CD is applied:
+      - ` python3 compare_probs.py --cd_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_CD.json --cd_german_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_de_with_fixed_incremental_cd.json --cd_english_file out/flores/en-de/topk3_final/contrastive-No
+ne--0.1-final-topk3-lang-en--0.9.probs_en_with_fixed_incremental_cd.json --sentences 90 281 490 533 679 863 873 875 --filter A --language_weight 0.9`
+          - Same as the first command, if sentences are specified, you can name them, if no name is given it will return "None". Additionally, you can specify the weight, for the naming of the produced tables.
+          - Here you can find the excel sheet, containing the table for λ_lang=0.5 and their split up German and English probabilities for all sentence indexes: --> Table_Processing/all_prob0.5_comp_table_None.xlsx
+          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: Table_Processing/prob0.5_comp_table_all_final.xlsx
+       
+          - Here you can find the excel sheet, containing the table for λ_lang=0.9 and their split up German and English probabilities for all sentence indexes: --> Table_Processing/all_prob0.9_comp_table_None.xlsx
+          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: Table_Processing/prob0.9_comp_table_all_final.xlsx
 
 
 
