@@ -44,15 +44,15 @@ Language-contrastive decoding with [Llama 2 Chat (13B)](https://arxiv.org/abs/23
 
 In addition to the .txt files containing the translations, this repository also produces 3 json files, containing:
 - A dictionary with the top 3 most probable tokens at each generation step during decoding (Baseline, λ_lang=0.5 and λ_lang=0.9).
-  > out/flores/en-de/topk3_final/final-baseline-topk3.en-de.json
-  > out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_CD.json
-  > out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_CD.json
+  - out/flores/en-de/topk3_final/final-baseline-topk3.en-de.json
+  - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_CD.json
+  - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_CD.json
 - A dictionary with the top 3 most probable German tokens given the previous generated CD tokens at each step of decoding (λ_lang=0.5 and λ_lang=0.9).
-  > out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_de_with_fixed_incremental_cd.json
-  > out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_de_with_fixed_incremental_cd.json
+  - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_de_with_fixed_incremental_cd.json
+  - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_de_with_fixed_incremental_cd.json
 - A dictionary with the top 3 most probable English tokens given the previous generated CD tokens at each step of decoding (λ_lang=0.5 and λ_lang=0.9).
-  > out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_en_with_fixed_incremental_cd.json
-  > out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_en_with_fixed_incremental_cd.json
+  - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_en_with_fixed_incremental_cd.json
+  - out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_en_with_fixed_incremental_cd.json
 
 ## Dataset and Models:
 
