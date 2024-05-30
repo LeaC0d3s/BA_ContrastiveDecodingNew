@@ -31,7 +31,7 @@ For my thesis I only used the **language-contrastive decoding** on the LLM part 
 !Note: The `transformers`library was upgraded from the original version `==4.33.1` to `==4.38.2` as there were some conflicts with my working environement.
 - `pip install -r requirements.txt
 
-**Commands used for Reproducing the Outputs and Extracting Probabilities**
+### **Commands used for Reproducing the Outputs and Extracting Probabilities**
  
 Baseline with [Llama 2 Chat (13B)](https://arxiv.org/abs/2307.09288) on English–German, using prompting with a one-shot example:
 - `python -m scripts.run --model_path llama-2-13b-chat --language_pairs en-de  --oneshot`
