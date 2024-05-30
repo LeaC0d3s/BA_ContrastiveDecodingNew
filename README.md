@@ -11,7 +11,7 @@ Author: Lea Müller
 </p>
 
 This repository is for my bachelor thesis. It contains all the code I used for reproducing the outputs for my evaluations as well as all the scrips I wrote in addition to process the obtained data. This README provides an overview of all the files and folder and how to use them.
-This repository was initially forked from the original creator and adapted for my own research goals.
+This repository was initially forked from the Repository "[ContraDecode](https://github.com/ZurichNLP/ContraDecode)" and adapted for my own research goals.
 
 Source-contrastive and language-contrastive decoding, as described in [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098):
 
