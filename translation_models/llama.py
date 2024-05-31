@@ -117,7 +117,6 @@ class LLaMaTranslationModel(TranslationModel):
             prompt += "Sure, here's the translation:\n"
             inputs = self.pipeline.preprocess(prompt)
 
-            #print(inputs["input_ids"], inputs["attention_mask"])
             output = self.model.generate(
                 input_ids=inputs["input_ids"].to(self.model.device),
                 attention_mask=inputs["attention_mask"].to(self.model.device),
@@ -193,6 +192,8 @@ class LLaMaTranslationModel(TranslationModel):
         return translations, save_probs
 
     def generate_step_by_step(self, input_ids, attention_mask, num_beams, **kwargs):
+        """Function produces the next predicted token based on the previous context,
+        including the output_scores for probability extraction"""
         output = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -214,6 +215,9 @@ class LLaMaTranslationModel(TranslationModel):
         return output
 
     def get_runner_ups(self, greedy_score):
+        """This function takes one score for a generated token and returns a list of lists
+            containing the two runner ups
+        """
 
         normalized = torch.nn.functional.softmax(greedy_score, dim=1)
         normalized_top_tokens = normalized.topk(3, dim=1).indices[0]
@@ -326,7 +330,7 @@ class LLaMaTranslationModel(TranslationModel):
 
         first_input_id = input_ids[0]
         input_length = first_input_id.shape[0]
-
+        # extract the generated translation from the input prompt:
         cd_tokens = outputs.sequences[0][input_length:]
         fixed_decoding_de = []
         fixed_decoding_de_trans = []
@@ -335,10 +339,11 @@ class LLaMaTranslationModel(TranslationModel):
         fixed_decoding_en_trans = []
         runner_ups_en = []
         fixed_token = []
+        #Loop over each generated token and incrementally add them to the German/English prompted model pipeline:
         for tok in cd_tokens:
             if tok == 2:
                 break
-            # incremenatlly Add next token from the CD output to the input IDs of the German and English ids
+            # incrementally Add next token from the CD output to the input IDs of the German and English ids
             input_ids_de = torch.cat([input_ids_de, torch.tensor([[tok]]).to(self.model.device)], dim=1)
             input_ids_en = torch.cat([input_ids_en, torch.tensor([[tok]]).to(self.model.device)], dim=1)
 
@@ -371,11 +376,6 @@ class LLaMaTranslationModel(TranslationModel):
 
         generated_tokens = outputs.sequences[0][input_length:]
 
-        # Loop over each time step in the generated sequence
-
-        #print(outputs.sequences[0][input_length:])
-        #cd_tokens = outputs.sequences[0][input_length:]
-
         # Initialize an empty list to store tuple
         save_probs = []
         save_all_fixed_encoding_en = []
@@ -386,6 +386,7 @@ class LLaMaTranslationModel(TranslationModel):
         print("en sent with 'translate to German-English scores'...: ")
         logging.info(self.tokenizer.decode(generated_tokens))
 
+        #save for each predicted token the 2nd and 3rd most probable token as well:
         runner_ups = []
         for greedy_score in outputs.scores:
             normalized = torch.nn.functional.softmax(greedy_score, dim=1)

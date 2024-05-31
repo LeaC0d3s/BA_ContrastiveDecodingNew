@@ -48,7 +48,7 @@ class MTTask:
             # Read all lines from the file
             source_sentences = file.readlines()
 
-        # Optionally, you can remove newline characters from each line
+        # remove newline characters from each line
         source_sentences = [sentence.strip() for sentence in source_sentences]
 
         if type == 'direct':
@@ -93,8 +93,6 @@ class MTTask:
 
             translations = []
             translations_probs = {}
-            #origin_translation_probs_de = {}
-            #origin_translation_probs_en = {}
             fixed_decoding_ids_de = {}
             fixed_decoding_ids_en = {}
             for idx, pair in enumerate(tqdm(list(zip(*multi_source_sentences)))):
@@ -106,8 +104,6 @@ class MTTask:
                 )
                 translations.append(translation)
                 translations_probs[idx] = (translation, save_probs)
-                #origin_translation_probs_de[idx] = (save_origin_translation[0], save_origin_probs_de)
-                #origin_translation_probs_en[idx] = (save_origin_translation[1], save_origin_probs_en)
                 fixed_decoding_ids_de[idx] = (translation, save_all_enc_de)
                 fixed_decoding_ids_en[idx] = (translation, save_all_enc_en)
         else:
@@ -139,14 +135,13 @@ class MTTask:
 
         if not os.path.isfile(str(self.out_dir)+"/"+"all_ref.text"):
             file_path = "de.txt"
-            #target_sentences = load_dataset("text", data_files=file_path,cache_dir=None)["train"]["text"]
             #target_sentences = load_dataset('gsarti/flores_101', self.load_converter[self.tgt_lang])['devtest']['sentence']
 
             with open(file_path, "r", encoding="utf-8") as file:
                 # Read all lines from the file
                 target_sentences = file.readlines()
 
-            # Optionally, you can remove newline characters from each line
+            #remove newline characters from each line
             target_sentences = [sentence.strip() for sentence in target_sentences]
 
 
