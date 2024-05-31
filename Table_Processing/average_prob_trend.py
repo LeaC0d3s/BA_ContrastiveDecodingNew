@@ -7,7 +7,7 @@ import numpy as np
 file_path = 'all_prob_comp_table_None.xlsx'  # Replace with your actual file path
 xls = pd.ExcelFile(file_path)
 
-# Read the 'Blatt A - prob_comp_table_A_ful' table from row 2
+# Read the 'Blatt 1 - all_prob_comp_table_N' table from row 2
 table = pd.read_excel(xls, 'Blatt 1 - all_prob_comp_table_N', header=2)
 
 table.columns = [
@@ -32,7 +32,7 @@ selected_indices_cd5 = [490, 533, 679, 107, 172, 474, 615,847, 914, 12, 327, 974
 selected_indices_cd9 = [490, 533, 679, 956, 12, 327, 974, 121, 210, 365, 387, 614, 772, 851, 893]
 error_type = "PartT"
 
-# Filter the data to include only the specified indices that contain Insert and or NonW errors
+# Filter the data to include only the specified indices that contain Insert and or NonW as well as mixed errors --> Other not included.
 selected_indices_b = [467, 444, 702, 772, 893]
 selected_indices_cd5 = [281, 467, 154, 196, 558, 559, 629,655, 754,871,877, 889, 934, 772, 893]
 selected_indices_cd9 = [281, 92, 107, 172,467,474, 505, 615, 824, 826, 847, 853, 874, 936, 196, 375, 558, 559, 629, 655, 754, 871, 889, 934, 444, 702, 41, 469]
