@@ -4,10 +4,10 @@ import os
 import xlsxwriter
 
 # Load the Excel file
-file_path = 'prob_comp_table_full.xlsx'  # Replace with your actual file path
+file_path = 'off_T_prob_comp_table_all.xlsx'  # Replace with your actual file path
 xls = pd.ExcelFile(file_path)
 
-# Read the 'Blatt A - prob_comp_table_A_ful' table from row 2
+# Read the 'Blatt X - prob_comp_table_X_ful' table from row 2
 table_a = pd.read_excel(xls, 'Blatt G - prob_comp_table_G_ful', header=2)
 
 table_a.columns = [

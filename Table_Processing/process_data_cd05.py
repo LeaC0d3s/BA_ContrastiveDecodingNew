@@ -4,7 +4,7 @@ import os
 import xlsxwriter
 
 # Load the Excel file
-file_path = 'prob0.5_comp_table_all_final.xlsx'  # Replace with your actual file path
+file_path = 'off_T_prob0.5_comp_table_all.xlsx'  # Replace with your actual file path
 xls = pd.ExcelFile(file_path)
 
 # Read the 'Blatt A - prob_comp_table_A_ful' table from row 2 (Replace A with B-G to access the other tables
