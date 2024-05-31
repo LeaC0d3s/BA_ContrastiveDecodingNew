@@ -6,10 +6,6 @@ Author: Lea Müller
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-red.svg)](#python)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
-<p align="center">
-  <img src="logo.png" width="500"/>
-</p>
-
 This repository is for my bachelor thesis. It contains all the code I used for reproducing the outputs for my evaluations as well as all the scrips I wrote in addition to process the obtained data. This README provides an overview of all the files and folder and how to use them.
 This repository was initially forked from the Repository "[ContraDecode](https://github.com/ZurichNLP/ContraDecode)" and adapted for my own research goals.
 
