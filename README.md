@@ -89,7 +89,7 @@ Here is a list of scripts I put together to process my obtained data:
       - `python3 -m compare_probs --base_file out/flores/en-de/topk3_final/final-baseline-topk3.en-de.json --cd05_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.5.probs_CD.json --cd09_file out/flores/en-de/topk3_final/contrastive-None--0.1-final-topk3-lang-en--0.9.probs_CD.json --sentences 90 281 490 533 679 863 873 875 --filter A`
           - If `--sentences` are specified, you can add the `--filter` argument to name the selected sentences you want to save in a table. Otherwise, it will take the whole dictionary with all 1012 sentences as input.
           - Here you can find the excel sheet, containing the table all the transaltions: --> **Table_Processing/all_prob_comp_table_None.xlsx**
-          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes: --> **Table_Processing/prob_comp_table_full.xlsx**
+          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes: --> **Table_Processing/off_T_prob_comp_table_all.xlsx**
        
 
   - The second command line argument retuns tables containing a CD output, combined with the German and English token probabilities before CD is applied:
@@ -97,10 +97,10 @@ Here is a list of scripts I put together to process my obtained data:
 ne--0.1-final-topk3-lang-en--0.9.probs_en_with_fixed_incremental_cd.json --sentences 90 281 490 533 679 863 873 875 --filter A --language_weight 0.9`
           - Same as the first command, if sentences are specified, you can name them, if no name is given it will return "None". Additionally, you can specify the weight, for the naming of the produced tables.
           - Here you can find the excel sheet, containing the table for λ_lang=0.5 and their split up German and English probabilities for all sentence indexes: --> **Table_Processing/all_prob0.5_comp_table_None.xlsx**
-          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: **Table_Processing/prob0.5_comp_table_all_final.xlsx**
+          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: **Table_Processing/off_T_prob0.5_comp_table_all.xlsx**
        
           - Here you can find the excel sheet, containing the table for λ_lang=0.9 and their split up German and English probabilities for all sentence indexes: --> **Table_Processing/all_prob0.9_comp_table_None.xlsx**
-          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: **Table_Processing/prob0.9_comp_table_all_final.xlsx**
+          - Here you can find the excel sheet, containing a collection of Filter A-G Sentence indexes of the same thing: **Table_Processing/off_T_prob0.9_comp_table_all.xlsx**
 
 
 ## Processing Table Data for Evaluation: Plotting Charts
