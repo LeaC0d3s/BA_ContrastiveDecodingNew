@@ -80,6 +80,8 @@ Here is a list of scripts I put together to process my obtained data:
 
 `compare_files.py`:
   - This script compares the original translation output with the reproduced translations and return all the affected lines, including a total count of the lines that are different.
+     - The original produced output files by [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098) are saved in: **predictions/llama_flores/en-de/**
+     - The reproduced output files are saved in: **out/flores/en-de/topk3_final/**
 
 
 `compare_probs.py`:
