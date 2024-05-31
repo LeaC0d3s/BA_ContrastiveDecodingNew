@@ -67,10 +67,10 @@ In addition to the .txt files containing the translations, this repository also 
 ### **translation_models/\_\_init\_\_.py**: 
 - rewriting an assert statement for the `translate` function, as I changed the format of the output to accomodate the probability dictionary.
 ### **translation_models/llama.py**: 
-- functions I adapted:
+- functions I adapted for additional probability output:
   - `_translate`,
   - `_translate_multi_source`
-- Functions I added:
+- Functions I added to extract the probabilities:
   - `generate_step_by_step`--> calls the German/English prompted model to generate the next token based on the previous tokens produced during CD,
   - `get_runner_ups`--> There are different variations of this code block through multiple functions to accomodate different input formats, but in general they all work similar to this when extracting the second and third most probable token at each generation step, using the normalized scores for probabilities over all possible tokens.
 
