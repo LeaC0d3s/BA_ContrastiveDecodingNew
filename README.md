@@ -88,6 +88,10 @@ Here is a list of scripts I put together to process my obtained data:
   - This script compares the original translation output with the reproduced translations and return all the affected lines, including a total count of the lines that are different.
      - The original produced output files by [Sennrich et al. (EACL 2024)](https://arxiv.org/abs/2309.07098) are saved in: **predictions/llama_flores/en-de/**
      - The reproduced output files are saved in: **out/flores/en-de/topk3_final/**
+   
+
+`filter_code_switching.py` :
+ - This code was used to filter out all the off-target translations for all 3 settings, returning for each filter (A-G) a list of indexes that full fill the criteria.
 
 
 `compare_probs.py`:
