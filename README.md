@@ -155,7 +155,7 @@ spBLEU:
 sacrebleu ref.txt < output.txt --tokenize flores101
 ```
 
-compare_bleu.py (Script was provided to me by Rico Sennrich for comparing BLEU scores of multiple translations)
+compare_bleu.py (Script was provided to me by Rico Sennrich for comparing BLEU scores of multiple translations. This script was used to calculate the individual BLEU scores of a translation)
 
 
 ## Reference
