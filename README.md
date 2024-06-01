@@ -64,6 +64,10 @@ In addition to the .txt files containing the translations, this repository also 
 
 
 ## Code Adaptions from Original Repository
+### **prediction folder **:
+ - I removed all the output data from the original prediction folder that I didn't need for comparing my Reproduced Output with.
+ - The **out/** folder contains the reproduced data.
+
 ### **mt_task.py**:
 1. Local access of source and reference data, instead of directly accessing the datasets via hugging face.
 2. Adjusting the return variable of the `evaluate` function, including the dictionary with the probabilities for both Baseline and CD translation.
